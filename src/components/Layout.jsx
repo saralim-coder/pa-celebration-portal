@@ -20,9 +20,7 @@ export default function Layout() {
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-primary font-serif text-lg">✦</span>
-            </div>
+            <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/56ca5eb8c_generated_image.png" alt="People Association Logo" className="w-10 h-10 object-contain" />
             <h1 className="font-serif text-xl md:text-2xl font-semibold text-foreground tracking-tight">
               Promotion Ceremony
             </h1>
