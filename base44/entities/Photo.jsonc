@@ -1,0 +1,27 @@
+{
+  "name": "Photo",
+  "type": "object",
+  "properties": {
+    "uploader_name": {
+      "type": "string",
+      "title": "Uploader Name"
+    },
+    "recipient": {
+      "type": "string",
+      "title": "Recipient"
+    },
+    "image_url": {
+      "type": "string",
+      "title": "Image URL"
+    },
+    "caption": {
+      "type": "string",
+      "title": "Caption"
+    }
+  },
+  "required": [
+    "uploader_name",
+    "recipient",
+    "image_url"
+  ]
+}

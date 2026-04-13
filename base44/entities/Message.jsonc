@@ -1,0 +1,23 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "uploader_name": {
+      "type": "string",
+      "title": "Uploader Name"
+    },
+    "recipient": {
+      "type": "string",
+      "title": "Recipient"
+    },
+    "content": {
+      "type": "string",
+      "title": "Message Content"
+    }
+  },
+  "required": [
+    "uploader_name",
+    "recipient",
+    "content"
+  ]
+}
