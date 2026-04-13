@@ -1,10 +1,8 @@
-import { useState } from "react";
-import { Trash2, Download, User, ArrowRight } from "lucide-react";
+import { Download, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "./ConfirmDialog";
 
-export default function PhotoCard({ photo, onDelete }) {
-  const [showDelete, setShowDelete] = useState(false);
+export default function PhotoCard({ photo }) {
 
   const handleDownload = async () => {
     const response = await fetch(photo.image_url);
@@ -43,24 +41,10 @@ export default function PhotoCard({ photo, onDelete }) {
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>
-            {onDelete && (
-              <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:text-destructive" onClick={() => setShowDelete(true)}>
-                <Trash2 className="w-3 h-3 mr-1" /> Delete
-              </Button>
-            )}
           </div>
         </div>
       </div>
 
-      <ConfirmDialog
-        open={showDelete}
-        onOpenChange={setShowDelete}
-        title="Delete Photo"
-        description="Are you sure you want to delete this photo? This action cannot be undone."
-        confirmLabel="Delete"
-        variant="destructive"
-        onConfirm={() => onDelete(photo.id)}
-      />
     </>
   );
 }

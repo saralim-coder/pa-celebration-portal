@@ -48,15 +48,7 @@ export default function Gallery() {
   const filteredPhotos = filterItems(photos);
   const filteredMessages = filterItems(messages);
 
-  const handleDeletePhoto = async (id) => {
-    await base44.entities.Photo.delete(id);
-    queryClient.invalidateQueries({ queryKey: ["photos"] });
-  };
 
-  const handleDeleteMessage = async (id) => {
-    await base44.entities.Message.delete(id);
-    queryClient.invalidateQueries({ queryKey: ["messages"] });
-  };
 
   const isLoading = loadingPhotos || loadingMessages;
 
@@ -102,7 +94,7 @@ export default function Gallery() {
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredPhotos.map((photo) => (
-                  <PhotoCard key={photo.id} photo={photo} onDelete={handleDeletePhoto} />
+                  <PhotoCard key={photo.id} photo={photo} />
                 ))}
               </div>
             )}
@@ -114,7 +106,7 @@ export default function Gallery() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {filteredMessages.map((message) => (
-                  <MessageCard key={message.id} message={message} onDelete={handleDeleteMessage} />
+                  <MessageCard key={message.id} message={message} />
                 ))}
               </div>
             )}

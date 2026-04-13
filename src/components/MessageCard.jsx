@@ -1,10 +1,19 @@
-import { useState } from "react";
-import { Trash2, User, ArrowRight, Quote } from "lucide-react";
+import { Download, User, ArrowRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ConfirmDialog from "./ConfirmDialog";
 
-export default function MessageCard({ message, onDelete }) {
-  const [showDelete, setShowDelete] = useState(false);
+export default function MessageCard({ message }) {
+  const handleDownload = () => {
+    const text = `Message to ${message.recipient}\nFrom: ${message.uploader_name}\n\n${message.content}`;
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `message_${message.recipient}_${message.id}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <>
@@ -20,23 +29,12 @@ export default function MessageCard({ message, onDelete }) {
             <ArrowRight className="w-3 h-3" />
             <span className="text-primary font-medium">{message.recipient}</span>
           </div>
-          {onDelete && (
-            <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setShowDelete(true)}>
-              <Trash2 className="w-3 h-3 mr-1" /> Delete
-            </Button>
-          )}
+          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
+            <Download className="w-3 h-3 mr-1" /> Download
+          </Button>
         </div>
       </div>
 
-      <ConfirmDialog
-        open={showDelete}
-        onOpenChange={setShowDelete}
-        title="Delete Message"
-        description="Are you sure you want to delete this message? This action cannot be undone."
-        confirmLabel="Delete"
-        variant="destructive"
-        onConfirm={() => onDelete(message.id)}
-      />
     </>
   );
 }
