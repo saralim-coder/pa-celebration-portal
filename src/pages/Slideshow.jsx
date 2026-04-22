@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight, Maximize, Minimize } from "lucide-react";
@@ -187,37 +187,10 @@ export default function Slideshow() {
   );
 }
 
-function FullscreenCanvas({ children, isFullscreen }) {
-  const containerRef = useRef(null);
-  const [scale, setScale] = useState(1);
-  const TARGET_W = 1920;
-  const TARGET_H = 1080;
-
-  useEffect(() => {
-    const compute = () => {
-      const sw = window.innerWidth / TARGET_W;
-      const sh = window.innerHeight / TARGET_H;
-      setScale(Math.min(sw, sh));
-    };
-    compute();
-    window.addEventListener("resize", compute);
-    return () => window.removeEventListener("resize", compute);
-  }, []);
-
+function FullscreenCanvas({ children }) {
   return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
-      <div
-        ref={containerRef}
-        style={{
-          width: TARGET_W,
-          height: TARGET_H,
-          transform: `scale(${scale})`,
-          transformOrigin: "center center",
-        }}
-        className="relative bg-background flex flex-col overflow-hidden"
-      >
-        {children}
-      </div>
+    <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
+      {children}
     </div>
   );
 }
