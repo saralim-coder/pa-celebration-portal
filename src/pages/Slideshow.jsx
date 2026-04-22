@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight, Maximize, Minimize } from "lucide-react";
@@ -27,15 +26,35 @@ export default function Slideshow() {
     return () => document.removeEventListener("fullscreenchange", onFsChange);
   }, []);
 
-  const { data: photos = [], isLoading: loadingPhotos } = useQuery({
-    queryKey: ["photos"],
-    queryFn: () => base44.entities.Photo.list("-created_date"),
-  });
+  const [photos, setPhotos] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [loadingPhotos, setLoadingPhotos] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(true);
 
-  const { data: messages = [], isLoading: loadingMessages } = useQuery({
-    queryKey: ["messages"],
-    queryFn: () => base44.entities.Message.list("-created_date"),
-  });
+  useEffect(() => {
+    base44.entities.Photo.list("-created_date").then((data) => {
+      setPhotos(data);
+      setLoadingPhotos(false);
+    });
+    base44.entities.Message.list("-created_date").then((data) => {
+      setMessages(data);
+      setLoadingMessages(false);
+    });
+
+    const unsubPhoto = base44.entities.Photo.subscribe((event) => {
+      if (event.type === "create") setPhotos((prev) => [event.data, ...prev]);
+      else if (event.type === "update") setPhotos((prev) => prev.map((p) => p.id === event.id ? event.data : p));
+      else if (event.type === "delete") setPhotos((prev) => prev.filter((p) => p.id !== event.id));
+    });
+
+    const unsubMsg = base44.entities.Message.subscribe((event) => {
+      if (event.type === "create") setMessages((prev) => [event.data, ...prev]);
+      else if (event.type === "update") setMessages((prev) => prev.map((m) => m.id === event.id ? event.data : m));
+      else if (event.type === "delete") setMessages((prev) => prev.filter((m) => m.id !== event.id));
+    });
+
+    return () => { unsubPhoto(); unsubMsg(); };
+  }, []);
 
   // Interleave photos and messages
   const slides = [];
@@ -94,17 +113,17 @@ export default function Slideshow() {
   }
 
   return (
-    <div className="fixed inset-0 bg-background flex flex-col">
+    <FullscreenCanvas isFullscreen={isFullscreen}>
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-4 md:p-6 bg-gradient-to-b from-background/80 to-transparent">
+      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-10 py-6 bg-gradient-to-b from-background/80 to-transparent">
         <div className="flex items-center gap-3">
-          <span className="text-primary font-serif text-lg">✦</span>
-          <h1 className="font-serif text-lg md:text-xl font-semibold text-foreground">
-            Promotion Ceremony
+          <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/56ca5eb8c_generated_image.png" alt="Logo" className="w-10 h-10 object-contain" />
+          <h1 className="font-serif text-2xl font-semibold text-foreground">
+            People's Association — Promotion Ceremony
           </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="font-sans text-xs text-muted-foreground hidden md:block">
+        <div className="flex items-center gap-3">
+          <span className="font-sans text-sm text-muted-foreground">
             {currentIndex + 1} / {slides.length}
           </span>
           <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleFullscreen}>
@@ -117,7 +136,7 @@ export default function Slideshow() {
       </div>
 
       {/* Slide Content */}
-      <div className="flex-1 flex items-center justify-center p-8 md:p-16">
+      <div className="flex-1 flex items-center justify-center px-20 py-24">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -125,7 +144,7 @@ export default function Slideshow() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="w-full max-w-4xl"
+            className="w-full max-w-5xl"
           >
             {currentSlide.type === "photo" ? (
               <PhotoSlide photo={currentSlide.data} />
@@ -137,20 +156,20 @@ export default function Slideshow() {
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-3 p-4 md:p-6 bg-gradient-to-t from-background/80 to-transparent">
+      <div className="absolute bottom-8 left-0 right-0 z-20 flex items-center justify-center gap-4 bg-gradient-to-t from-background/80 to-transparent pb-4">
         <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goPrev}>
-          <SkipBack className="w-4 h-4" />
+          <SkipBack className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="h-12 w-12 rounded-full border-primary/30"
+          className="h-14 w-14 rounded-full border-primary/30"
           onClick={() => setIsPlaying((p) => !p)}
         >
-          {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+          {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
         </Button>
         <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goNext}>
-          <SkipForward className="w-4 h-4" />
+          <SkipForward className="w-5 h-5" />
         </Button>
       </div>
 
@@ -164,24 +183,59 @@ export default function Slideshow() {
           key={isPlaying ? currentIndex : "paused"}
         />
       </div>
+    </FullscreenCanvas>
+  );
+}
+
+function FullscreenCanvas({ children, isFullscreen }) {
+  const containerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const TARGET_W = 1920;
+  const TARGET_H = 1080;
+
+  useEffect(() => {
+    const compute = () => {
+      const sw = window.innerWidth / TARGET_W;
+      const sh = window.innerHeight / TARGET_H;
+      setScale(Math.min(sw, sh));
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
+      <div
+        ref={containerRef}
+        style={{
+          width: TARGET_W,
+          height: TARGET_H,
+          transform: `scale(${scale})`,
+          transformOrigin: "center center",
+        }}
+        className="relative bg-background flex flex-col overflow-hidden"
+      >
+        {children}
+      </div>
     </div>
   );
 }
 
 function PhotoSlide({ photo }) {
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="w-full max-h-[60vh] rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30">
-        <img src={photo.image_url} alt="" className="w-full h-full object-contain bg-card" />
+    <div className="flex flex-col items-center gap-8">
+      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30" style={{ maxHeight: 700 }}>
+        <img src={photo.image_url} alt="" className="w-full h-full object-contain bg-card" style={{ maxHeight: 700 }} />
       </div>
-      <div className="text-center space-y-2">
+      <div className="text-center space-y-3">
         {photo.caption && (
-          <p className="font-serif text-lg md:text-xl text-foreground italic">"{photo.caption}"</p>
+          <p className="font-serif text-2xl text-foreground italic">"{photo.caption}"</p>
         )}
-        <div className="flex items-center justify-center gap-2 text-sm font-sans text-muted-foreground">
-          <User className="w-3.5 h-3.5" />
+        <div className="flex items-center justify-center gap-3 text-lg font-sans text-muted-foreground">
+          <User className="w-5 h-5" />
           <span>{photo.uploader_name}</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-5 h-5" />
           <span className="text-primary font-medium">{photo.recipient}</span>
         </div>
       </div>
@@ -191,15 +245,15 @@ function PhotoSlide({ photo }) {
 
 function MessageSlide({ message }) {
   return (
-    <div className="flex flex-col items-center justify-center text-center space-y-8 px-4">
-      <Quote className="w-10 h-10 text-primary/30" />
-      <p className="font-serif text-2xl md:text-4xl lg:text-5xl text-foreground leading-relaxed max-w-3xl">
+    <div className="flex flex-col items-center justify-center text-center space-y-10 px-8">
+      <Quote className="w-16 h-16 text-primary/30" />
+      <p className="font-serif text-5xl text-foreground leading-relaxed max-w-4xl">
         {message.content}
       </p>
-      <div className="flex items-center gap-2 text-sm font-sans text-muted-foreground">
-        <User className="w-3.5 h-3.5" />
+      <div className="flex items-center gap-3 text-xl font-sans text-muted-foreground">
+        <User className="w-5 h-5" />
         <span>{message.uploader_name}</span>
-        <ArrowRight className="w-3.5 h-3.5" />
+        <ArrowRight className="w-5 h-5" />
         <span className="text-primary font-medium">{message.recipient}</span>
       </div>
     </div>
