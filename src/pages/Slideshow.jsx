@@ -2,13 +2,30 @@ import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight } from "lucide-react";
+import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight, Maximize, Minimize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Slideshow() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  useEffect(() => {
+    const onFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
 
   const { data: photos = [], isLoading: loadingPhotos } = useQuery({
     queryKey: ["photos"],
@@ -90,6 +107,9 @@ export default function Slideshow() {
           <span className="font-sans text-xs text-muted-foreground hidden md:block">
             {currentIndex + 1} / {slides.length}
           </span>
+          <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleFullscreen}>
+            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+          </Button>
           <Button asChild variant="ghost" size="icon" className="h-9 w-9">
             <Link to="/gallery"><X className="w-4 h-4" /></Link>
           </Button>
