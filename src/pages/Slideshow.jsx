@@ -190,8 +190,8 @@ export default function Slideshow() {
 function FullscreenCanvas({ children, isFullscreen }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(1);
-  const TARGET_W = 1920;
-  const TARGET_H = 1080;
+  const TARGET_W = 1080;
+  const TARGET_H = 1920;
 
   useEffect(() => {
     const compute = () => {
