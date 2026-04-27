@@ -122,7 +122,7 @@ export default function Slideshow() {
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-10 py-6 bg-gradient-to-b from-background/80 to-transparent">
         <div className="flex items-center gap-3">
-          <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/56ca5eb8c_generated_image.png" alt="Logo" className="w-10 h-10 object-contain" />
+          <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="Logo" className="w-10 h-10 object-contain" />
           <h1 className="font-serif text-2xl font-semibold text-foreground">
             People's Association — Promotion Ceremony
           </h1>
