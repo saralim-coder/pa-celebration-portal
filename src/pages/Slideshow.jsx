@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight, Maximize, Minimize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function Slideshow() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -56,7 +57,7 @@ export default function Slideshow() {
     return () => { unsubPhoto(); unsubMsg(); };
   }, []);
 
-  // Interleave photos and messages
+  // Interleave photos and messages into a flat list
   const slides = [];
   const maxLen = Math.max(photos.length, messages.length);
   for (let i = 0; i < maxLen; i++) {
@@ -64,21 +65,24 @@ export default function Slideshow() {
     if (i < messages.length) slides.push({ type: "message", data: messages[i] });
   }
 
+  // We show 2 items per "page"
+  const totalPages = Math.ceil(slides.length / 2);
+
   const goNext = useCallback(() => {
-    if (slides.length === 0) return;
-    setCurrentIndex((prev) => (prev + 1) % slides.length);
-  }, [slides.length]);
+    if (totalPages === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % totalPages);
+  }, [totalPages]);
 
   const goPrev = useCallback(() => {
-    if (slides.length === 0) return;
-    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
-  }, [slides.length]);
+    if (totalPages === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + totalPages) % totalPages);
+  }, [totalPages]);
 
   useEffect(() => {
-    if (!isPlaying || slides.length === 0) return;
-    const interval = setInterval(goNext, 6000);
+    if (!isPlaying || totalPages === 0) return;
+    const interval = setInterval(goNext, 8000);
     return () => clearInterval(interval);
-  }, [isPlaying, goNext, slides.length]);
+  }, [isPlaying, goNext, totalPages]);
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -91,7 +95,8 @@ export default function Slideshow() {
   }, [goNext, goPrev]);
 
   const isLoading = loadingPhotos || loadingMessages;
-  const currentSlide = slides[currentIndex];
+  const leftSlide = slides[currentIndex * 2];
+  const rightSlide = slides[currentIndex * 2 + 1];
 
   if (isLoading) {
     return (
@@ -124,7 +129,7 @@ export default function Slideshow() {
         </div>
         <div className="flex items-center gap-3">
           <span className="font-sans text-sm text-muted-foreground">
-            {currentIndex + 1} / {slides.length}
+            {currentIndex + 1} / {totalPages}
           </span>
           <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleFullscreen}>
             {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
@@ -135,22 +140,57 @@ export default function Slideshow() {
         </div>
       </div>
 
-      {/* Slide Content */}
-      <div className="flex-1 flex items-center justify-center px-20 py-24">
+      {/* Slide Content — 2 items + QR divider */}
+      <div className="flex-1 flex items-stretch px-10 py-20 gap-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.96 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="w-full max-w-5xl"
+            className="flex w-full items-center gap-0"
           >
-            {currentSlide.type === "photo" ? (
-              <PhotoSlide photo={currentSlide.data} />
-            ) : (
-              <MessageSlide message={currentSlide.data} />
-            )}
+            {/* Left panel */}
+            <div className="flex-1 flex items-center justify-center px-6">
+              {leftSlide && (
+                leftSlide.type === "photo"
+                  ? <PhotoSlide photo={leftSlide.data} />
+                  : <MessageSlide message={leftSlide.data} />
+              )}
+            </div>
+
+            {/* Center QR divider */}
+            <div className="flex flex-col items-center justify-center gap-4 px-6 shrink-0">
+              <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
+              <div className="bg-card border border-border/50 rounded-2xl p-4 shadow-lg">
+                <QRCodeSVG
+                  value={window.location.origin + "/upload"}
+                  size={140}
+                  bgColor="transparent"
+                  fgColor="hsl(var(--primary))"
+                  level="M"
+                />
+              </div>
+              <p className="font-sans text-xs text-muted-foreground text-center max-w-[120px] leading-tight">
+                Scan to share your tribute
+              </p>
+              <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
+            </div>
+
+            {/* Right panel */}
+            <div className="flex-1 flex items-center justify-center px-6">
+              {rightSlide ? (
+                rightSlide.type === "photo"
+                  ? <PhotoSlide photo={rightSlide.data} />
+                  : <MessageSlide message={rightSlide.data} />
+              ) : (
+                <div className="flex flex-col items-center justify-center opacity-30 gap-4">
+                  <Quote className="w-12 h-12 text-primary/30" />
+                  <p className="font-serif text-xl text-muted-foreground">More coming soon…</p>
+                </div>
+              )}
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -178,8 +218,8 @@ export default function Slideshow() {
         <motion.div
           className="h-full bg-primary/50"
           initial={{ width: "0%" }}
-          animate={{ width: isPlaying ? "100%" : `${((currentIndex) / slides.length) * 100}%` }}
-          transition={isPlaying ? { duration: 6, ease: "linear" } : { duration: 0.3 }}
+          animate={{ width: isPlaying ? "100%" : `${((currentIndex) / totalPages) * 100}%` }}
+          transition={isPlaying ? { duration: 8, ease: "linear" } : { duration: 0.3 }}
           key={isPlaying ? currentIndex : "paused"}
         />
       </div>
@@ -197,18 +237,18 @@ function FullscreenCanvas({ children }) {
 
 function PhotoSlide({ photo }) {
   return (
-    <div className="flex flex-col items-center gap-8">
-      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30" style={{ maxHeight: 700 }}>
-        <img src={photo.image_url} alt="" className="w-full h-full object-contain bg-card" style={{ maxHeight: 700 }} />
+    <div className="flex flex-col items-center gap-5 w-full">
+      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30" style={{ maxHeight: 380 }}>
+        <img src={photo.image_url} alt="" className="w-full h-full object-contain bg-card" style={{ maxHeight: 380 }} />
       </div>
-      <div className="text-center space-y-3">
+      <div className="text-center space-y-2">
         {photo.caption && (
-          <p className="font-serif text-2xl text-foreground italic">"{photo.caption}"</p>
+          <p className="font-serif text-xl text-foreground italic">"{photo.caption}"</p>
         )}
-        <div className="flex items-center justify-center gap-3 text-lg font-sans text-muted-foreground">
-          <User className="w-5 h-5" />
+        <div className="flex items-center justify-center gap-2 text-base font-sans text-muted-foreground">
+          <User className="w-4 h-4" />
           <span>{photo.uploader_name}</span>
-          <ArrowRight className="w-5 h-5" />
+          <ArrowRight className="w-4 h-4" />
           <span className="text-primary font-medium">{photo.recipient}</span>
         </div>
       </div>
@@ -218,15 +258,15 @@ function PhotoSlide({ photo }) {
 
 function MessageSlide({ message }) {
   return (
-    <div className="flex flex-col items-center justify-center text-center space-y-10 px-8">
-      <Quote className="w-16 h-16 text-primary/30" />
-      <p className="font-serif text-5xl text-foreground leading-relaxed max-w-4xl">
+    <div className="flex flex-col items-center justify-center text-center space-y-6 px-4">
+      <Quote className="w-10 h-10 text-primary/30" />
+      <p className="font-serif text-3xl text-foreground leading-relaxed">
         {message.content}
       </p>
-      <div className="flex items-center gap-3 text-xl font-sans text-muted-foreground">
-        <User className="w-5 h-5" />
+      <div className="flex items-center gap-2 text-base font-sans text-muted-foreground">
+        <User className="w-4 h-4" />
         <span>{message.uploader_name}</span>
-        <ArrowRight className="w-5 h-5" />
+        <ArrowRight className="w-4 h-4" />
         <span className="text-primary font-medium">{message.recipient}</span>
       </div>
     </div>
