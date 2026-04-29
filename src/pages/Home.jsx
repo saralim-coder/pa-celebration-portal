@@ -12,7 +12,7 @@ const features = [
   },
   {
     icon: MessageSquare,
-    title: "Send Messages",
+    title: "Send Well Wishes",
     description: "Write heartfelt congratulations and best wishes",
     link: "/upload",
   },
@@ -52,7 +52,7 @@ export default function Home() {
         <div className="flex items-center justify-center gap-3 pt-4">
           <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 font-sans text-sm px-6 h-11 rounded-lg">
             <Link to="/upload">
-              Share a Tribute <ArrowRight className="w-4 h-4 ml-2" />
+              Share Well Wishes <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
           <Button asChild variant="outline" className="font-sans text-sm px-6 h-11 rounded-lg border-border hover:bg-muted">

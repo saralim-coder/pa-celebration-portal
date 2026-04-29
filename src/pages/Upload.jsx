@@ -8,7 +8,7 @@ export default function Upload() {
     <div className="max-w-2xl mx-auto animate-fade-in">
       <div className="text-center mb-8">
         <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground mb-2">
-          Share Your Tribute
+          Share Your Well Wishes
         </h2>
         <p className="font-sans text-sm text-muted-foreground">
           Upload a photo or write a message to celebrate this achievement
