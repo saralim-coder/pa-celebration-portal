@@ -43,18 +43,18 @@ export default function Slideshow() {
     });
 
     const unsubPhoto = base44.entities.Photo.subscribe((event) => {
-      if (event.type === "create") setPhotos((prev) => [event.data, ...prev]);
-      else if (event.type === "update") setPhotos((prev) => prev.map((p) => p.id === event.id ? event.data : p));
-      else if (event.type === "delete") setPhotos((prev) => prev.filter((p) => p.id !== event.id));
+      if (event.type === "create") setPhotos((prev) => [event.data, ...prev]);else
+      if (event.type === "update") setPhotos((prev) => prev.map((p) => p.id === event.id ? event.data : p));else
+      if (event.type === "delete") setPhotos((prev) => prev.filter((p) => p.id !== event.id));
     });
 
     const unsubMsg = base44.entities.Message.subscribe((event) => {
-      if (event.type === "create") setMessages((prev) => [event.data, ...prev]);
-      else if (event.type === "update") setMessages((prev) => prev.map((m) => m.id === event.id ? event.data : m));
-      else if (event.type === "delete") setMessages((prev) => prev.filter((m) => m.id !== event.id));
+      if (event.type === "create") setMessages((prev) => [event.data, ...prev]);else
+      if (event.type === "update") setMessages((prev) => prev.map((m) => m.id === event.id ? event.data : m));else
+      if (event.type === "delete") setMessages((prev) => prev.filter((m) => m.id !== event.id));
     });
 
-    return () => { unsubPhoto(); unsubMsg(); };
+    return () => {unsubPhoto();unsubMsg();};
   }, []);
 
   // Interleave photos and messages into a flat list
@@ -88,7 +88,7 @@ export default function Slideshow() {
     const handleKey = (e) => {
       if (e.key === "ArrowRight") goNext();
       if (e.key === "ArrowLeft") goPrev();
-      if (e.key === " ") { e.preventDefault(); setIsPlaying((p) => !p); }
+      if (e.key === " ") {e.preventDefault();setIsPlaying((p) => !p);}
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -102,8 +102,8 @@ export default function Slideshow() {
     return (
       <div className="fixed inset-0 bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
-      </div>
-    );
+      </div>);
+
   }
 
   if (slides.length === 0) {
@@ -113,8 +113,8 @@ export default function Slideshow() {
         <Button asChild variant="outline" className="font-sans text-sm">
           <Link to="/upload">Upload Content</Link>
         </Button>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -123,8 +123,8 @@ export default function Slideshow() {
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-10 py-6 bg-gradient-to-b from-background/80 to-transparent">
         <div className="flex items-center gap-3">
           <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="Logo" className="w-10 h-10 object-contain" />
-          <h1 className="font-serif text-2xl font-semibold text-foreground">
-            PA Promotion & Long Service Awards Presentation Ceremony 2026
+          <h1 className="font-serif text-2xl font-semibold text-foreground">Promotion & Long Service Awards Presentation Ceremony 2026
+
           </h1>
         </div>
         <div className="flex items-center gap-3">
@@ -149,15 +149,15 @@ export default function Slideshow() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="flex w-full items-center gap-0"
-          >
+            className="flex w-full items-center gap-0">
+            
             {/* Left panel */}
             <div className="flex-1 flex items-center justify-center px-6">
               {leftSlide && (
-                leftSlide.type === "photo"
-                  ? <PhotoSlide photo={leftSlide.data} />
-                  : <MessageSlide message={leftSlide.data} />
-              )}
+              leftSlide.type === "photo" ?
+              <PhotoSlide photo={leftSlide.data} /> :
+              <MessageSlide message={leftSlide.data} />)
+              }
             </div>
 
             {/* Center QR divider */}
@@ -169,8 +169,8 @@ export default function Slideshow() {
                   size={140}
                   bgColor="transparent"
                   fgColor="hsl(var(--primary))"
-                  level="M"
-                />
+                  level="M" />
+                
               </div>
               <p className="font-sans text-xs text-muted-foreground text-center max-w-[120px] leading-tight">
                 Scan to share your tribute
@@ -180,16 +180,16 @@ export default function Slideshow() {
 
             {/* Right panel */}
             <div className="flex-1 flex items-center justify-center px-6">
-              {rightSlide ? (
-                rightSlide.type === "photo"
-                  ? <PhotoSlide photo={rightSlide.data} />
-                  : <MessageSlide message={rightSlide.data} />
-              ) : (
-                <div className="flex flex-col items-center justify-center opacity-30 gap-4">
+              {rightSlide ?
+              rightSlide.type === "photo" ?
+              <PhotoSlide photo={rightSlide.data} /> :
+              <MessageSlide message={rightSlide.data} /> :
+
+              <div className="flex flex-col items-center justify-center opacity-30 gap-4">
                   <Quote className="w-12 h-12 text-primary/30" />
                   <p className="font-serif text-xl text-muted-foreground">More coming soon…</p>
                 </div>
-              )}
+              }
             </div>
           </motion.div>
         </AnimatePresence>
@@ -204,8 +204,8 @@ export default function Slideshow() {
           variant="outline"
           size="icon"
           className="h-14 w-14 rounded-full border-primary/30"
-          onClick={() => setIsPlaying((p) => !p)}
-        >
+          onClick={() => setIsPlaying((p) => !p)}>
+          
           {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
         </Button>
         <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goNext}>
@@ -218,21 +218,21 @@ export default function Slideshow() {
         <motion.div
           className="h-full bg-primary/50"
           initial={{ width: "0%" }}
-          animate={{ width: isPlaying ? "100%" : `${((currentIndex) / totalPages) * 100}%` }}
+          animate={{ width: isPlaying ? "100%" : `${currentIndex / totalPages * 100}%` }}
           transition={isPlaying ? { duration: 8, ease: "linear" } : { duration: 0.3 }}
-          key={isPlaying ? currentIndex : "paused"}
-        />
+          key={isPlaying ? currentIndex : "paused"} />
+        
       </div>
-    </FullscreenCanvas>
-  );
+    </FullscreenCanvas>);
+
 }
 
 function FullscreenCanvas({ children }) {
   return (
     <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
       {children}
-    </div>
-  );
+    </div>);
+
 }
 
 function PhotoSlide({ photo }) {
@@ -242,9 +242,9 @@ function PhotoSlide({ photo }) {
         <img src={photo.image_url} alt="" className="w-full h-full object-contain bg-card" style={{ maxHeight: 380 }} />
       </div>
       <div className="text-center space-y-2">
-        {photo.caption && (
-          <p className="font-serif text-xl text-foreground italic">"{photo.caption}"</p>
-        )}
+        {photo.caption &&
+        <p className="font-serif text-xl text-foreground italic">"{photo.caption}"</p>
+        }
         <div className="flex items-center justify-center gap-2 text-base font-sans text-muted-foreground">
           <User className="w-4 h-4" />
           <span>{photo.uploader_name}</span>
@@ -252,8 +252,8 @@ function PhotoSlide({ photo }) {
           <span className="text-primary font-medium">{photo.recipient}</span>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 function MessageSlide({ message }) {
@@ -269,6 +269,6 @@ function MessageSlide({ message }) {
         <ArrowRight className="w-4 h-4" />
         <span className="text-primary font-medium">{message.recipient}</span>
       </div>
-    </div>
-  );
+    </div>);
+
 }
