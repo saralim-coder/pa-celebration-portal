@@ -7,6 +7,7 @@ import PhotoCard from "../components/PhotoCard";
 import MessageCard from "../components/MessageCard";
 import FilterBar from "../components/FilterBar";
 import GoldDivider from "../components/GoldDivider";
+import SlideshowQueue from "../components/SlideshowQueue";
 
 export default function Gallery() {
   const [search, setSearch] = useState("");
@@ -72,6 +73,8 @@ export default function Gallery() {
       />
 
       <GoldDivider className="my-6" />
+
+      {!isLoading && <SlideshowQueue photos={photos} messages={messages} />}
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
