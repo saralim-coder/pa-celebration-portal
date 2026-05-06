@@ -120,14 +120,19 @@ export default function Slideshow() {
   return (
     <FullscreenCanvas isFullscreen={isFullscreen}>
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-10 py-6 bg-gradient-to-b from-background/80 to-transparent">
-        <div className="flex items-center gap-3">
+      <div className="absolute top-0 left-0 right-0 z-20 flex items-center px-10 py-5 bg-gradient-to-b from-background/80 to-transparent">
+        {/* Left: logo */}
+        <div className="flex items-center gap-3 w-48 shrink-0">
           <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="Logo" className="w-10 h-10 object-contain" />
-          <h1 className="text-foreground font-serif text-2xl font-semibold">Promotion & Long Service Awards Presentation Ceremony 2026
-
+        </div>
+        {/* Center: title */}
+        <div className="flex-1 flex justify-center">
+          <h1 className="text-foreground font-serif text-2xl font-semibold text-center">
+            PA Promotion & Long Service Awards Presentation Ceremony 2026
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        {/* Right: controls */}
+        <div className="flex items-center gap-3 w-48 shrink-0 justify-end">
           <span className="font-sans text-sm text-muted-foreground">
             {currentIndex + 1} / {totalPages}
           </span>
@@ -238,8 +243,8 @@ function FullscreenCanvas({ children }) {
 function PhotoSlide({ photo }) {
   return (
     <div className="flex flex-col items-center gap-5 w-full">
-      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30" style={{ maxHeight: 380 }}>
-        <img src={photo.image_url} alt="" className="w-full h-full object-contain bg-card" style={{ maxHeight: 380 }} />
+      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30" style={{ height: 380 }}>
+        <img src={photo.image_url} alt="" className="w-full h-full object-cover" />
       </div>
       <div className="text-center space-y-2">
         {photo.caption &&
