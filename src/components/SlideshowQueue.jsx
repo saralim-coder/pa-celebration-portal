@@ -10,8 +10,8 @@ export default function SlideshowQueue({ photos, messages }) {
     const slides = [];
     const maxLen = Math.max(photos.length, messages.length);
     for (let i = 0; i < maxLen; i++) {
-      if (i < photos.length) slides.push({ type: "photo", id: photos[i].id });
-      if (i < messages.length) slides.push({ type: "message", id: messages[i].id });
+      if (i < photos.length) slides.push({ type: "photo", id: photos[i].id, uploader_name: photos[i].uploader_name, recipient: photos[i].recipient });
+      if (i < messages.length) slides.push({ type: "message", id: messages[i].id, uploader_name: messages[i].uploader_name, recipient: messages[i].recipient });
     }
     // Each page shows 2 slides
     return slides.map((slide, idx) => {
@@ -44,12 +44,15 @@ export default function SlideshowQueue({ photos, messages }) {
             <span className="font-sans text-xs font-bold text-primary w-5 text-center">
               #{item.position}
             </span>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-sans font-medium ${item.type === "photo" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}>
+            <span className={`text-xs px-2 py-0.5 rounded-full font-sans font-medium shrink-0 ${item.type === "photo" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}>
               {item.type === "photo" ? "📷 Photo" : "💬 Message"}
             </span>
-            <div className="flex items-center gap-1 ml-auto text-xs text-muted-foreground font-sans">
+            <span className="font-sans text-xs text-foreground truncate">
+              {item.uploader_name} <span className="text-muted-foreground">→</span> <span className="text-primary font-medium">{item.recipient}</span>
+            </span>
+            <div className="flex items-center gap-1 ml-auto shrink-0 text-xs text-muted-foreground font-sans">
               <Clock className="w-3 h-3" />
-              <span>~{formatTime(item.secondsUntil)} into cycle</span>
+              <span>~{formatTime(item.secondsUntil)}</span>
             </div>
           </div>
         ))}
