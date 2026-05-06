@@ -233,10 +233,25 @@ export default function Slideshow() {
 
 function FullscreenCanvas({ children }) {
   return (
-    <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
-      {children}
-    </div>);
-
+    <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
+      <div
+        style={{
+          width: "1920px",
+          height: "1080px",
+          transform: `scale(${Math.min(window.innerWidth / 1920, window.innerHeight / 1080)})`,
+          transformOrigin: "top left",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          marginTop: "-540px",
+          marginLeft: "-960px",
+        }}
+        className="bg-background flex flex-col overflow-hidden"
+      >
+        {children}
+      </div>
+    </div>
+  );
 }
 
 function PhotoSlide({ photo }) {
