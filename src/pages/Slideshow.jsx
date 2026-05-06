@@ -121,10 +121,8 @@ export default function Slideshow() {
     <FullscreenCanvas isFullscreen={isFullscreen}>
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center px-10 py-5 bg-gradient-to-b from-background/80 to-transparent">
-        {/* Left: logo */}
-        <div className="flex items-center gap-3 w-48 shrink-0">
-          <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="Logo" className="w-10 h-10 object-contain" />
-        </div>
+        {/* Left: spacer */}
+        <div className="w-48 shrink-0" />
         {/* Center: title */}
         <div className="flex-1 flex justify-center items-center gap-3">
           <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="PA Logo" className="w-10 h-10 object-contain" />
