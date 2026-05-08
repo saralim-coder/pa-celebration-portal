@@ -1,15 +1,33 @@
 import { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight, Maximize, Minimize } from "lucide-react";
+import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight, Maximize, Minimize, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 
+const SLIDESHOW_PASSWORD = "PA2026";
+
 export default function Slideshow() {
+  const [unlocked, setUnlocked] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (passwordInput === SLIDESHOW_PASSWORD) {
+      setUnlocked(true);
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+      setPasswordInput("");
+    }
+  };
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -89,6 +107,9 @@ export default function Slideshow() {
       if (e.key === "ArrowRight") goNext();
       if (e.key === "ArrowLeft") goPrev();
       if (e.key === " ") {e.preventDefault();setIsPlaying((p) => !p);}
+      if (e.key === "Escape" && document.fullscreenElement) {
+        document.exitFullscreen();
+      }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -97,6 +118,39 @@ export default function Slideshow() {
   const isLoading = loadingPhotos || loadingMessages;
   const leftSlide = slides[currentIndex * 2];
   const rightSlide = slides[currentIndex * 2 + 1];
+
+  if (!unlocked) {
+    return (
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <div className="bg-card border border-border rounded-2xl p-8 shadow-xl w-full max-w-sm space-y-6 text-center">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+            <Lock className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h2 className="font-serif text-2xl font-semibold text-foreground mb-1">Slideshow Access</h2>
+            <p className="font-sans text-sm text-muted-foreground">Enter the password to start the slideshow</p>
+          </div>
+          <form onSubmit={handlePasswordSubmit} className="space-y-3">
+            <Input
+              type="password"
+              placeholder="Password"
+              value={passwordInput}
+              onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false); }}
+              className={`text-center font-sans ${passwordError ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              autoFocus
+            />
+            {passwordError && (
+              <p className="font-sans text-xs text-destructive">Incorrect password. Please try again.</p>
+            )}
+            <Button type="submit" className="w-full font-sans">Enter Slideshow</Button>
+          </form>
+          <Button asChild variant="ghost" className="font-sans text-sm text-muted-foreground w-full">
+            <Link to="/gallery">← Back to Gallery</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
