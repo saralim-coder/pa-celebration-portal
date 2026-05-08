@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 
-const SLIDESHOW_PASSWORD = "PA2026";
+const SLIDESHOW_PASSWORD = "HRdata123!";
 
 export default function Slideshow() {
   const [unlocked, setUnlocked] = useState(false);
