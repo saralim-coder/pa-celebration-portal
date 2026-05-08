@@ -286,14 +286,25 @@ export default function Slideshow() {
 }
 
 function FullscreenCanvas({ children }) {
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const updateScale = () => {
+      setScale(Math.min(window.innerWidth / 1920, window.innerHeight / 1080));
+    };
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
   return (
     <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
       <div
         style={{
           width: "1920px",
           height: "1080px",
-          transform: `scale(${Math.min(window.innerWidth / 1920, window.innerHeight / 1080)})`,
-          transformOrigin: "top left",
+          transform: `scale(${scale})`,
+          transformOrigin: "center center",
           position: "absolute",
           top: "50%",
           left: "50%",
