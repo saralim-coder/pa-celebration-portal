@@ -37,9 +37,9 @@ export default function Home() {
       <div className="text-center py-12 md:py-20 space-y-6">
         <div className="flex flex-col items-center gap-3">
           <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="People's Association" className="w-20 h-20 object-contain" />
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-sans text-xs font-medium tracking-wider uppercase hidden">
-            <span>✦</span> People's Association <span>✦</span>
-          </div>
+          
+
+          
         </div>
         <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground leading-tight tracking-tight">
           PA Promotion and Long Service Awards<br />
