@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 
 const SLIDESHOW_PASSWORD = "HRdata123!";
 
@@ -145,31 +144,126 @@ export default function Slideshow() {
     const wasPlaying = isPlaying;
     setIsPlaying(false);
 
-    const doc = new jsPDF({ orientation: "landscape", unit: "px", format: [1280, 720] });
-    const pdfW = 1280;
-    const pdfH = 720;
+    // A4 landscape in mm
+    const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+    const W = doc.internal.pageSize.getWidth();   // 297
+    const H = doc.internal.pageSize.getHeight();  // 210
 
-    const slideEl = document.getElementById("slideshow-root");
+    // bg colour matching CSS --background: 38 30% 96%
+    const BG = [250, 246, 240];
+    const CREAM_DARK = [240, 232, 220];
+    const RED = [160, 30, 30];
+    const MUTED = [130, 110, 100];
+
+    const loadImg = (url) => new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const c = document.createElement("canvas");
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext("2d").drawImage(img, 0, 0);
+        resolve({ data: c.toDataURL("image/jpeg", 0.85), w: img.naturalWidth, h: img.naturalHeight });
+      };
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+
+    const colW = W / 2 - 15;   // width of each content column
+    const headerH = 18;
+    const contentY = headerH + 4;
+    const contentH = H - contentY - 6;
+
+    const drawPage = async (left, right, pageNum) => {
+      if (pageNum > 1) doc.addPage();
+
+      // Background
+      doc.setFillColor(...BG);
+      doc.rect(0, 0, W, H, "F");
+
+      // Header bar
+      doc.setFillColor(...CREAM_DARK);
+      doc.rect(0, 0, W, headerH, "F");
+      doc.setFont("times", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(...RED);
+      doc.text("PA Promotion & Long Service Awards Presentation Ceremony 2026", W / 2, 11, { align: "center" });
+
+      // Divider line down centre
+      doc.setDrawColor(...RED);
+      doc.setLineWidth(0.3);
+      doc.line(W / 2, contentY, W / 2, H - 6);
+
+      // Page number
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(...MUTED);
+      doc.text(`${pageNum} / ${totalPages}`, W - 6, H - 2, { align: "right" });
+
+      const drawSlide = async (slide, startX) => {
+        if (!slide) return;
+        const cx = startX + colW / 2; // centre x of column
+
+        if (slide.type === "photo") {
+          const result = await loadImg(slide.data.image_url);
+          if (result) {
+            const maxW = colW - 10;
+            const maxH = contentH * 0.62;
+            const ratio = Math.min(maxW / result.w, maxH / result.h);
+            const iw = result.w * ratio;
+            const ih = result.h * ratio;
+            const ix = startX + (colW - iw) / 2;
+            const iy = contentY + 4;
+            // subtle shadow box
+            doc.setFillColor(220, 210, 200);
+            doc.roundedRect(ix + 1, iy + 1, iw, ih, 2, 2, "F");
+            doc.addImage(result.data, "JPEG", ix, iy, iw, ih);
+            let ty = iy + ih + 8;
+            if (slide.data.caption) {
+              doc.setFont("times", "italic");
+              doc.setFontSize(10);
+              doc.setTextColor(60, 30, 20);
+              const lines = doc.splitTextToSize(`"${slide.data.caption}"`, colW - 8);
+              doc.text(lines, cx, ty, { align: "center" });
+              ty += lines.length * 5.5;
+            }
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+            doc.setTextColor(...MUTED);
+            doc.text(`${slide.data.uploader_name}  →  ${slide.data.recipient}`, cx, ty + 4, { align: "center" });
+          }
+        } else {
+          // Message slide
+          doc.setFont("times", "italic");
+          doc.setFontSize(13);
+          doc.setTextColor(40, 20, 10);
+          const lines = doc.splitTextToSize(slide.data.content, colW - 12);
+          const blockH = lines.length * 7;
+          const ty = contentY + (contentH - blockH) / 2;
+          // quote mark decoration
+          doc.setFont("times", "bold");
+          doc.setFontSize(36);
+          doc.setTextColor(...RED);
+          doc.text("\u201C", cx - 2, ty - 4, { align: "center" });
+          doc.setFont("times", "italic");
+          doc.setFontSize(13);
+          doc.setTextColor(40, 20, 10);
+          doc.text(lines, cx, ty + 4, { align: "center" });
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8);
+          doc.setTextColor(...MUTED);
+          doc.text(`${slide.data.uploader_name}  →  ${slide.data.recipient}`, cx, contentY + contentH - 2, { align: "center" });
+        }
+      };
+
+      await drawSlide(left, 8);
+      if (right) await drawSlide(right, W / 2 + 7);
+    };
 
     for (let i = 0; i < totalPages; i++) {
-      setCurrentIndex(i);
-      // Wait for slide to render and images to load
-      await new Promise((r) => setTimeout(r, 900));
-      const canvas = await html2canvas(slideEl, {
-        useCORS: true,
-        allowTaint: true,
-        scale: 1,
-        backgroundColor: "#faf6f0",
-        logging: false,
-        foreignObjectRendering: false,
-      });
-      const imgData = canvas.toDataURL("image/jpeg", 0.92);
-      if (i > 0) doc.addPage([pdfW, pdfH], "landscape");
-      doc.addImage(imgData, "JPEG", 0, 0, pdfW, pdfH);
+      await drawPage(slides[i * 2], slides[i * 2 + 1], i + 1);
     }
 
     doc.save("PA_Awards_Slideshow.pdf");
-    setCurrentIndex(0);
     setExportingPdf(false);
     if (wasPlaying) setIsPlaying(true);
   };
@@ -345,7 +439,7 @@ export default function Slideshow() {
 
 function FullscreenCanvas({ children }) {
   return (
-    <div id="slideshow-root" className="fixed inset-0 bg-background flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
       {children}
     </div>
   );
