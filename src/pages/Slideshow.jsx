@@ -141,6 +141,8 @@ export default function Slideshow() {
 
   const exportToPdf = async () => {
     setExportingPdf(true);
+    const wasPlaying = isPlaying;
+    setIsPlaying(false);
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
@@ -231,6 +233,7 @@ export default function Slideshow() {
 
     doc.save("PA_Awards_Slideshow.pdf");
     setExportingPdf(false);
+    if (wasPlaying) setIsPlaying(true);
   };
 
   if (!unlocked) {
