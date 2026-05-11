@@ -332,7 +332,7 @@ function PhotoSlide({ photo }) {
             const { naturalWidth, naturalHeight } = e.target;
             setIsPortrait(naturalHeight > naturalWidth);
           }}
-          className={isPortrait === null ? "opacity-0" : isPortrait ? "h-full w-auto object-contain" : "w-full h-full object-cover"}
+          className={isPortrait === null ? "opacity-0" : isPortrait ? "h-full w-auto object-contain" : "w-full h-auto object-contain"}
         />
       </div>
       <div className="text-center space-y-2">
