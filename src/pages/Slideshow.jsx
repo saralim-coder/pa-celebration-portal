@@ -320,10 +320,20 @@ function FullscreenCanvas({ children }) {
 }
 
 function PhotoSlide({ photo }) {
+  const [isPortrait, setIsPortrait] = useState(null);
+
   return (
     <div className="flex flex-col items-center gap-5 w-full">
-      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30" style={{ height: 380 }}>
-        <img src={photo.image_url} alt="" className="w-full h-auto object-contain" />
+      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5" style={{ height: 380 }}>
+        <img
+          src={photo.image_url}
+          alt=""
+          onLoad={(e) => {
+            const { naturalWidth, naturalHeight } = e.target;
+            setIsPortrait(naturalHeight > naturalWidth);
+          }}
+          className={isPortrait === null ? "opacity-0" : isPortrait ? "h-full w-auto object-contain" : "w-full h-full object-cover"}
+        />
       </div>
       <div className="text-center space-y-2">
         {photo.caption &&
