@@ -42,7 +42,7 @@ export default function Home() {
           
         </div>
         <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground leading-tight tracking-tight">
-         Promotion and Long Service Awards<br />
+        PA Promotion and Long Service Awards<br />
           <span className="text-primary">Presentation Ceremony 2026</span>
         </h1>
         <p className="font-sans text-sm md:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
