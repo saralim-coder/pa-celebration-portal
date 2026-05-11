@@ -181,7 +181,7 @@ export default function Slideshow() {
         <div className="flex-1 flex justify-center items-center gap-3">
           <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="PA Logo" className="w-10 h-10 object-contain" />
           <h1 className="text-foreground font-serif text-2xl font-semibold text-center">
-            Promotion & Long Service Awards Presentation Ceremony 2026
+            PA Promotion & Long Service Awards Presentation Ceremony 2026
           </h1>
         </div>
         {/* Right: controls */}
