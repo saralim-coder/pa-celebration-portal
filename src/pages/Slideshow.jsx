@@ -237,7 +237,7 @@ export default function Slideshow() {
                 
               </div>
               <p className="font-sans text-xs text-muted-foreground text-center max-w-[120px] leading-tight">
-                Scan to share your tribute
+                Scan to share your well wishes
               </p>
               <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
             </div>
