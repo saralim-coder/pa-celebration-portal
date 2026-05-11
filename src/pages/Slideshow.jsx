@@ -304,7 +304,7 @@ function FullscreenCanvas({ children }) {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 bg-background flex items-center justify-center overflow-hidden">
       <div
         style={{
           width: "1920px",
