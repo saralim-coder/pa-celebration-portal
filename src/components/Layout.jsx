@@ -22,7 +22,7 @@ export default function Layout() {
           <Link to="/" className="flex items-center gap-3">
             <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="People's Association Logo" className="w-10 h-10 object-contain" />
             <h1 className="font-serif text-xl md:text-2xl font-semibold text-foreground tracking-tight">
-             Promotion & Long Service Awards 2026
+            PA  Promotion & Long Service Awards 2026
             </h1>
           </Link>
           <nav className="hidden md:flex items-center gap-1">
