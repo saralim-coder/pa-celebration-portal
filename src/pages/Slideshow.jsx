@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 const SLIDESHOW_PASSWORD = "HRdata123!";
 
@@ -143,95 +144,25 @@ export default function Slideshow() {
     setExportingPdf(true);
     const wasPlaying = isPlaying;
     setIsPlaying(false);
-    const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-    const pageW = doc.internal.pageSize.getWidth();
-    const pageH = doc.internal.pageSize.getHeight();
 
-    // Helper to load an image as base64
-    const loadImage = (url) => new Promise((resolve) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        canvas.getContext("2d").drawImage(img, 0, 0);
-        resolve({ dataUrl: canvas.toDataURL("image/jpeg", 0.85), w: img.naturalWidth, h: img.naturalHeight });
-      };
-      img.onerror = () => resolve(null);
-      img.src = url;
-    });
+    const doc = new jsPDF({ orientation: "landscape", unit: "px", format: [1280, 720] });
+    const pdfW = 1280;
+    const pdfH = 720;
 
-    const drawSlide = async (slide, x, y, w, h) => {
-      if (!slide) return;
-      if (slide.type === "photo") {
-        const result = await loadImage(slide.data.image_url);
-        if (result) {
-          const maxImgH = h * 0.6;
-          const ratio = Math.min(w * 0.9 / result.w, maxImgH / result.h);
-          const iw = result.w * ratio;
-          const ih = result.h * ratio;
-          doc.addImage(result.dataUrl, "JPEG", x + (w - iw) / 2, y + 5, iw, ih);
-          let textY = y + ih + 12;
-          if (slide.data.caption) {
-            doc.setFont("times", "italic");
-            doc.setFontSize(11);
-            doc.setTextColor(60, 20, 20);
-            const lines = doc.splitTextToSize(`"${slide.data.caption}"`, w - 10);
-            doc.text(lines, x + w / 2, textY, { align: "center" });
-            textY += lines.length * 6;
-          }
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(9);
-          doc.setTextColor(120, 80, 80);
-          doc.text(`${slide.data.uploader_name} → ${slide.data.recipient}`, x + w / 2, textY + 4, { align: "center" });
-        }
-      } else {
-        doc.setFont("times", "italic");
-        doc.setFontSize(14);
-        doc.setTextColor(40, 20, 10);
-        const lines = doc.splitTextToSize(slide.data.content, w - 16);
-        const textBlockH = lines.length * 8;
-        const textY = y + (h - textBlockH) / 2;
-        doc.text(lines, x + w / 2, textY, { align: "center" });
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        doc.setTextColor(120, 80, 80);
-        doc.text(`${slide.data.uploader_name} → ${slide.data.recipient}`, x + w / 2, y + h - 8, { align: "center" });
-      }
-    };
+    const slideEl = document.getElementById("slideshow-content");
 
     for (let i = 0; i < totalPages; i++) {
-      if (i > 0) doc.addPage();
-      // Header
-      doc.setFillColor(248, 244, 238);
-      doc.rect(0, 0, pageW, pageH, "F");
-      doc.setFont("times", "bold");
-      doc.setFontSize(13);
-      doc.setTextColor(160, 30, 30);
-      doc.text("PA Promotion & Long Service Awards Ceremony 2026", pageW / 2, 10, { align: "center" });
-      doc.setDrawColor(160, 30, 30);
-      doc.setLineWidth(0.3);
-      doc.line(20, 13, pageW - 20, 13);
-
-      const left = slides[i * 2];
-      const right = slides[i * 2 + 1];
-      const colW = (pageW - 60) / 2;
-      const colH = pageH - 30;
-      await drawSlide(left, 10, 18, colW, colH);
-      // Divider
-      doc.setDrawColor(180, 120, 60);
-      doc.setLineWidth(0.4);
-      doc.line(pageW / 2, 16, pageW / 2, pageH - 8);
-      if (right) await drawSlide(right, pageW / 2 + 10, 18, colW, colH);
-      // Page number
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      doc.setTextColor(160, 160, 160);
-      doc.text(`${i + 1} / ${totalPages}`, pageW - 12, pageH - 4, { align: "right" });
+      setCurrentIndex(i);
+      // Wait for slide to render
+      await new Promise((r) => setTimeout(r, 700));
+      const canvas = await html2canvas(slideEl, { useCORS: true, scale: 1, backgroundColor: null });
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      if (i > 0) doc.addPage([pdfW, pdfH], "landscape");
+      doc.addImage(imgData, "JPEG", 0, 0, pdfW, pdfH);
     }
 
     doc.save("PA_Awards_Slideshow.pdf");
+    setCurrentIndex(0);
     setExportingPdf(false);
     if (wasPlaying) setIsPlaying(true);
   };
@@ -319,7 +250,7 @@ export default function Slideshow() {
       </div>
 
       {/* Slide Content — 2 items + QR divider */}
-      <div className="flex-1 flex items-stretch px-10 py-20 gap-0 overflow-hidden">
+      <div id="slideshow-content" className="flex-1 flex items-stretch px-10 py-20 gap-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
