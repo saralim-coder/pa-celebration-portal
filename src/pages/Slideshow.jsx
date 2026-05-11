@@ -45,6 +45,14 @@ export default function Slideshow() {
     return () => document.removeEventListener("fullscreenchange", onFsChange);
   }, []);
 
+  // Auto-enter fullscreen when unlocked
+  useEffect(() => {
+    if (unlocked && !document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+      setIsFullscreen(true);
+    }
+  }, [unlocked]);
+
   const [photos, setPhotos] = useState([]);
   const [messages, setMessages] = useState([]);
   const [loadingPhotos, setLoadingPhotos] = useState(true);
