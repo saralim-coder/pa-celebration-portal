@@ -323,7 +323,7 @@ function PhotoSlide({ photo }) {
   return (
     <div className="flex flex-col items-center gap-5 w-full">
       <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30" style={{ height: 380 }}>
-        <img src={photo.image_url} alt="" className="w-full h-full object-cover" />
+        <img src={photo.image_url} alt="" className="w-full h-auto object-contain" />
       </div>
       <div className="text-center space-y-2">
         {photo.caption &&
