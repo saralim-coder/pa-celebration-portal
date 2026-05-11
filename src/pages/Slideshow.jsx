@@ -149,13 +149,20 @@ export default function Slideshow() {
     const pdfW = 1280;
     const pdfH = 720;
 
-    const slideEl = document.getElementById("slideshow-content");
+    const slideEl = document.getElementById("slideshow-root");
 
     for (let i = 0; i < totalPages; i++) {
       setCurrentIndex(i);
-      // Wait for slide to render
-      await new Promise((r) => setTimeout(r, 700));
-      const canvas = await html2canvas(slideEl, { useCORS: true, scale: 1, backgroundColor: null });
+      // Wait for slide to render and images to load
+      await new Promise((r) => setTimeout(r, 900));
+      const canvas = await html2canvas(slideEl, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 1,
+        backgroundColor: "#faf6f0",
+        logging: false,
+        foreignObjectRendering: false,
+      });
       const imgData = canvas.toDataURL("image/jpeg", 0.92);
       if (i > 0) doc.addPage([pdfW, pdfH], "landscape");
       doc.addImage(imgData, "JPEG", 0, 0, pdfW, pdfH);
@@ -250,7 +257,7 @@ export default function Slideshow() {
       </div>
 
       {/* Slide Content — 2 items + QR divider */}
-      <div id="slideshow-content" className="flex-1 flex items-stretch px-10 py-20 gap-0 overflow-hidden">
+      <div className="flex-1 flex items-stretch px-10 py-20 gap-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -338,7 +345,7 @@ export default function Slideshow() {
 
 function FullscreenCanvas({ children }) {
   return (
-    <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
+    <div id="slideshow-root" className="fixed inset-0 bg-background flex flex-col overflow-hidden">
       {children}
     </div>
   );
