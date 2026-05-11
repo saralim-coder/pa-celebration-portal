@@ -23,9 +23,6 @@ export default function Slideshow() {
     if (passwordInput === SLIDESHOW_PASSWORD) {
       setUnlocked(true);
       setPasswordError(false);
-      // Trigger fullscreen immediately on user gesture
-      document.documentElement.requestFullscreen().catch(() => {});
-      setIsFullscreen(true);
     } else {
       setPasswordError(true);
       setPasswordInput("");

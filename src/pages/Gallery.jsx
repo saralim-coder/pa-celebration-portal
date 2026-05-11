@@ -2,8 +2,7 @@ import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, MessageSquare, Loader2, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Camera, MessageSquare, Loader2 } from "lucide-react";
 import PhotoCard from "../components/PhotoCard";
 import MessageCard from "../components/MessageCard";
 import FilterBar from "../components/FilterBar";
@@ -13,25 +12,7 @@ import SlideshowQueue from "../components/SlideshowQueue";
 export default function Gallery() {
   const [search, setSearch] = useState("");
   const [recipient, setRecipient] = useState("all");
-  const [downloading, setDownloading] = useState(null);
   const queryClient = useQueryClient();
-
-  const handleDownloadPDF = async (type) => {
-    setDownloading(type);
-    try {
-      const response = await base44.functions.invoke("exportPDF", { type });
-      // response.data is the PDF as a blob/arraybuffer via axios
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `ceremony-2026-${type}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } finally {
-      setDownloading(null);
-    }
-  };
 
   const { data: photos = [], isLoading: loadingPhotos } = useQuery({
     queryKey: ["photos"],
@@ -81,20 +62,6 @@ export default function Gallery() {
         <p className="font-sans text-sm text-muted-foreground">
           Browse all photos and messages shared for the ceremony
         </p>
-        <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
-          <Button variant="outline" size="sm" className="font-sans gap-2" onClick={() => handleDownloadPDF("messages")} disabled={!!downloading}>
-            {downloading === "messages" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            Download Messages PDF
-          </Button>
-          <Button variant="outline" size="sm" className="font-sans gap-2" onClick={() => handleDownloadPDF("photos")} disabled={!!downloading}>
-            {downloading === "photos" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            Download Photos PDF
-          </Button>
-          <Button variant="outline" size="sm" className="font-sans gap-2" onClick={() => handleDownloadPDF("all")} disabled={!!downloading}>
-            {downloading === "all" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            Download All PDF
-          </Button>
-        </div>
       </div>
 
       <FilterBar
