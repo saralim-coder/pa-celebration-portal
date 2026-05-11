@@ -72,7 +72,13 @@ export default function Slideshow() {
       if (event.type === "delete") setMessages((prev) => prev.filter((m) => m.id !== event.id));
     });
 
-    return () => {unsubPhoto();unsubMsg();};
+    // Full reload every 60 seconds to catch any missed updates
+    const reloadInterval = setInterval(() => {
+      base44.entities.Photo.list("-created_date").then(setPhotos);
+      base44.entities.Message.list("-created_date").then(setMessages);
+    }, 60000);
+
+    return () => {unsubPhoto();unsubMsg();clearInterval(reloadInterval);};
   }, []);
 
   // Interleave photos and messages into a flat list
