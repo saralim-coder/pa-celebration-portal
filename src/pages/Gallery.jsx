@@ -2,7 +2,8 @@ import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, MessageSquare, Loader2 } from "lucide-react";
+import { Camera, MessageSquare, Loader2, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import PhotoCard from "../components/PhotoCard";
 import MessageCard from "../components/MessageCard";
 import FilterBar from "../components/FilterBar";
@@ -49,7 +50,45 @@ export default function Gallery() {
   const filteredPhotos = filterItems(photos);
   const filteredMessages = filterItems(messages);
 
+  const [downloadingPhotos, setDownloadingPhotos] = useState(false);
+  const [downloadingMessages, setDownloadingMessages] = useState(false);
 
+  const handleDownloadAllPhotos = async () => {
+    setDownloadingPhotos(true);
+    try {
+      for (let i = 0; i < filteredPhotos.length; i++) {
+        const photo = filteredPhotos[i];
+        const res = await fetch(photo.image_url);
+        const blob = await res.blob();
+        const ext = blob.type.split("/")[1] || "jpg";
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `photo-${i + 1}-${photo.uploader_name}-to-${photo.recipient}.${ext}`.replace(/\s+/g, "_");
+        a.click();
+        URL.revokeObjectURL(url);
+        // small delay to avoid browser blocking multiple downloads
+        await new Promise((r) => setTimeout(r, 400));
+      }
+    } finally {
+      setDownloadingPhotos(false);
+    }
+  };
+
+  const handleDownloadAllMessages = () => {
+    setDownloadingMessages(true);
+    const text = filteredMessages
+      .map((m, i) => `--- Message ${i + 1} ---\nFrom: ${m.uploader_name}\nTo: ${m.recipient}\n\n${m.content}`)
+      .join("\n\n");
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "messages.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+    setDownloadingMessages(false);
+  };
 
   const isLoading = loadingPhotos || loadingMessages;
 
@@ -82,14 +121,38 @@ export default function Gallery() {
         </div>
       ) : (
         <Tabs defaultValue="photos" className="w-full">
-          <TabsList className="bg-muted/50 h-10 rounded-lg">
-            <TabsTrigger value="photos" className="font-sans text-sm gap-2 data-[state=active]:bg-card">
-              <Camera className="w-4 h-4" /> Photos ({filteredPhotos.length})
-            </TabsTrigger>
-            <TabsTrigger value="messages" className="font-sans text-sm gap-2 data-[state=active]:bg-card">
-              <MessageSquare className="w-4 h-4" /> Messages ({filteredMessages.length})
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <TabsList className="bg-muted/50 h-10 rounded-lg">
+              <TabsTrigger value="photos" className="font-sans text-sm gap-2 data-[state=active]:bg-card">
+                <Camera className="w-4 h-4" /> Photos ({filteredPhotos.length})
+              </TabsTrigger>
+              <TabsTrigger value="messages" className="font-sans text-sm gap-2 data-[state=active]:bg-card">
+                <MessageSquare className="w-4 h-4" /> Messages ({filteredMessages.length})
+              </TabsTrigger>
+            </TabsList>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-sans text-xs gap-1.5"
+                onClick={handleDownloadAllPhotos}
+                disabled={downloadingPhotos || filteredPhotos.length === 0}
+              >
+                {downloadingPhotos ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                Download Photos
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-sans text-xs gap-1.5"
+                onClick={handleDownloadAllMessages}
+                disabled={downloadingMessages || filteredMessages.length === 0}
+              >
+                {downloadingMessages ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                Download Messages
+              </Button>
+            </div>
+          </div>
 
           <TabsContent value="photos" className="mt-6">
             {filteredPhotos.length === 0 ? (
