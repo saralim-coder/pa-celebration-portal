@@ -25,6 +25,11 @@ export default function PhotoUploadForm() {
       toast.error("Please select an image file");
       return;
     }
+    const isHeic = f.type === "image/heic" || f.type === "image/heif" || f.name.toLowerCase().endsWith(".heic") || f.name.toLowerCase().endsWith(".heif");
+    if (isHeic) {
+      toast.error("HEIC/HEIF photos are not supported. Please convert to JPG or PNG first (e.g. take a screenshot, or use your phone's settings to change the camera format).");
+      return;
+    }
     setFile(f);
     setPreview(URL.createObjectURL(f));
   };
