@@ -84,7 +84,6 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Per-event breakdown */}
       {events.length > 0 && (
         <div className="mt-10">
           <h3 className="font-serif text-xl font-semibold text-foreground mb-4">Per Event Breakdown</h3>

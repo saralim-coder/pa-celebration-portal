@@ -8,12 +8,12 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Layout from './components/Layout';
 import EventLayout from './components/EventLayout';
 import Home from './pages/Home.jsx';
-import MyEvents from './pages/MyEvents';
-import EventHome from './pages/EventHome';
-import EventUpload from './pages/EventUpload';
-import EventGallery from './pages/EventGallery';
-import EventSlideshow from './pages/EventSlideshow';
-import Dashboard from './pages/Dashboard';
+import MyEvents from './pages/MyEvents.jsx';
+import EventHome from './pages/EventHome.jsx';
+import EventUpload from './pages/EventUpload.jsx';
+import EventGallery from './pages/EventGallery.jsx';
+import EventSlideshow from './pages/EventSlideshow.jsx';
+import Dashboard from './pages/Dashboard.jsx';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
