@@ -1,9 +1,10 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Home, CalendarDays } from "lucide-react";
+import { Home, CalendarDays, LayoutDashboard } from "lucide-react";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/my-events", label: "My Events", icon: CalendarDays },
+  { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
 ];
 
 export default function Layout() {

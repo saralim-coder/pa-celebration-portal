@@ -13,6 +13,7 @@ import EventHome from './pages/EventHome';
 import EventUpload from './pages/EventUpload';
 import EventGallery from './pages/EventGallery';
 import EventSlideshow from './pages/EventSlideshow';
+import Dashboard from './pages/Dashboard';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -40,6 +41,7 @@ const AuthenticatedApp = () => {
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/my-events" element={<MyEvents />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
 
