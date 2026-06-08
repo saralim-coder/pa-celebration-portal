@@ -66,8 +66,8 @@ export default function Home() {
                       <Calendar className="w-3 h-3" /> {event.ceremony_date}
                     </span>
                   )}
-                  {event.organizer_name && (
-                    <span className="font-sans text-xs text-muted-foreground">by {event.organizer_name}</span>
+                  {event.organizer_email && (
+                    <span className="font-sans text-xs text-muted-foreground">by {event.organizer_email}</span>
                   )}
                 </div>
               </div>
