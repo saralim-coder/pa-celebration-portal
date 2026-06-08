@@ -18,7 +18,7 @@ const SCREEN_SIZES = [
 export default function EventSlideshow() {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
-  const [stage, setStage] = useState("password");
+  const [stage, setStage] = useState("password"); // "password" | "size" | "slideshow"
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [selectedSize, setSelectedSize] = useState(SCREEN_SIZES[0]);
@@ -96,6 +96,7 @@ export default function EventSlideshow() {
     }
   };
 
+  // Slides
   const slides = [];
   const maxLen = Math.max(photos.length, messages.length);
   for (let i = 0; i < maxLen; i++) {
@@ -127,9 +128,12 @@ export default function EventSlideshow() {
 
   const isLoading = loadingPhotos || loadingMessages || loadingEvent;
 
+  // ── Password screen ──
   if (stage === "password") {
     if (loadingEvent) return <div className="fixed inset-0 bg-background flex items-center justify-center"><Loader2 className="w-8 h-8 text-primary animate-spin" /></div>;
+    // If no password set, skip straight to size picker
     if (event && !event.slideshow_password) {
+      // Auto-advance
       if (stage === "password") { setTimeout(() => setStage("size"), 0); }
       return null;
     }
@@ -163,6 +167,7 @@ export default function EventSlideshow() {
     );
   }
 
+  // ── Screen size picker ──
   if (stage === "size") {
     return (
       <div className="fixed inset-0 bg-background flex items-center justify-center p-4">
@@ -212,6 +217,7 @@ export default function EventSlideshow() {
     );
   }
 
+  // ── Slideshow ──
   if (isLoading) {
     return <div className="fixed inset-0 bg-background flex items-center justify-center"><Loader2 className="w-8 h-8 text-primary animate-spin" /></div>;
   }
@@ -232,10 +238,11 @@ export default function EventSlideshow() {
 
   const canvasStyle = selectedSize.id === "fullscreen"
     ? {}
-    : { width: "100vw", height: "100vh" };
+    : { width: "100vw", height: "100vh" }; // always fill viewport; ratio is visual reference only
 
   return (
     <div className="fixed inset-0 bg-background flex flex-col overflow-hidden" style={canvasStyle}>
+      {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center px-10 py-5 bg-gradient-to-b from-background/80 to-transparent">
         <div className="w-48 shrink-0" />
         <div className="flex-1 flex justify-center items-center gap-3">
@@ -257,6 +264,7 @@ export default function EventSlideshow() {
         </div>
       </div>
 
+      {/* Slide content */}
       <div className="flex-1 flex items-stretch px-10 py-20 gap-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -292,6 +300,7 @@ export default function EventSlideshow() {
         </AnimatePresence>
       </div>
 
+      {/* Controls */}
       <div className="absolute bottom-8 left-0 right-0 z-20 flex items-center justify-center gap-4">
         <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goPrev}><SkipBack className="w-5 h-5" /></Button>
         <Button variant="outline" size="icon" className="h-14 w-14 rounded-full border-primary/30" onClick={() => setIsPlaying((p) => !p)}>
@@ -300,6 +309,7 @@ export default function EventSlideshow() {
         <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goNext}><SkipForward className="w-5 h-5" /></Button>
       </div>
 
+      {/* Progress bar */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-muted/30 z-30">
         <motion.div
           className="h-full bg-primary/50"
