@@ -7,7 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Layout from './components/Layout';
 import EventLayout from './components/EventLayout';
-import Home from './pages/Home';
+import Home from './pages/Home.jsx';
 import MyEvents from './pages/MyEvents';
 import EventHome from './pages/EventHome';
 import EventUpload from './pages/EventUpload';
