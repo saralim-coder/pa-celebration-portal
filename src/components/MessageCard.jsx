@@ -34,6 +34,7 @@ export default function MessageCard({ message }) {
           </Button>
         </div>
       </div>
+
     </>
   );
 }
