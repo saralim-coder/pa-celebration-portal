@@ -30,6 +30,17 @@
     "slideshow_password": {
       "type": "string",
       "title": "Slideshow Password"
+    },
+    "screen_size": {
+      "type": "string",
+      "title": "Screen Size",
+      "enum": [
+        "16:9",
+        "9:16",
+        "4:3",
+        "1:1"
+      ],
+      "default": "16:9"
     }
   },
   "required": [

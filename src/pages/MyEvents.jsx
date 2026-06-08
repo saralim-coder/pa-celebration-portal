@@ -117,6 +117,7 @@ function CreateEventDialog({ open, onOpenChange, onCreated }) {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [password, setPassword] = useState("");
+  const [screenSize, setScreenSize] = useState("16:9");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -130,9 +131,10 @@ function CreateEventDialog({ open, onOpenChange, onCreated }) {
       organizer_name: getPAEmail(),
       organizer_email: getPAEmail(),
       slideshow_password: password.trim() || undefined,
+      screen_size: screenSize,
     });
     setLoading(false);
-    setTitle(""); setDescription(""); setDate(""); setPassword("");
+    setTitle(""); setDescription(""); setDate(""); setPassword(""); setScreenSize("16:9");
     onCreated(event);
   };
 
@@ -154,6 +156,22 @@ function CreateEventDialog({ open, onOpenChange, onCreated }) {
           <div className="space-y-2">
             <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">Ceremony Date</Label>
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="font-sans text-sm" />
+          </div>
+          <div className="space-y-2">
+            <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">Screen Size</Label>
+            <div className="grid grid-cols-4 gap-2">
+              {["16:9", "9:16", "4:3", "1:1"].map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => setScreenSize(size)}
+                  className={`font-sans text-sm py-2 rounded-md border transition-all ${screenSize === size ? "border-primary bg-primary/10 text-primary font-semibold" : "border-border text-muted-foreground hover:border-primary/50"}`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+            <p className="font-sans text-xs text-muted-foreground">Select the aspect ratio of your display screen.</p>
           </div>
           <div className="space-y-2">
             <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">Slideshow Password</Label>
