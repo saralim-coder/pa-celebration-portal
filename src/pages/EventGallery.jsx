@@ -74,16 +74,14 @@ export default function EventGallery() {
 
   const handleDownloadAllMessages = () => {
     setDownloadingMessages(true);
-    const escape = (val) => `"${String(val ?? "").replace(/"/g, '""')}"`;
-    const rows = [["From", "To", "Message"].map(escape).join(",")];
-    filteredMessages.forEach((m) => {
-      rows.push([m.uploader_name, m.recipient, m.content].map(escape).join(","));
-    });
-    const blob = new Blob([rows.join("\n")], { type: "text/csv" });
+    const text = filteredMessages
+      .map((m, i) => `--- Message ${i + 1} ---\nFrom: ${m.uploader_name}\nTo: ${m.recipient}\n\n${m.content}`)
+      .join("\n\n");
+    const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "messages.csv";
+    a.download = "messages.txt";
     a.click();
     URL.revokeObjectURL(url);
     setDownloadingMessages(false);
