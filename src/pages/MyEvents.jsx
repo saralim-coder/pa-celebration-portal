@@ -10,16 +10,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import GoldDivider from "../components/GoldDivider";
-import PALoginGate from "../components/PALoginGate";
+import PALoginGate, { getPAEmail } from "../components/PALoginGate";
 
 export default function MyEvents() {
   const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
   const [deleting, setDeleting] = useState(null);
 
+  const paEmail = getPAEmail();
+
   const { data: events = [], isLoading } = useQuery({
-    queryKey: ["my-events"],
-    queryFn: () => base44.entities.Event.list("-created_date"),
+    queryKey: ["my-events", paEmail],
+    queryFn: () => base44.entities.Event.filter({ organizer_email: paEmail }, "-created_date"),
   });
 
   const handleDelete = async (eventId) => {
@@ -125,8 +127,8 @@ function CreateEventDialog({ open, onOpenChange, onCreated }) {
       title: title.trim(),
       description: description.trim() || undefined,
       ceremony_date: date || undefined,
-      organizer_name: "PA Staff",
-      organizer_email: "pa@pa.gov.sg",
+      organizer_name: getPAEmail(),
+      organizer_email: getPAEmail(),
       slideshow_password: password.trim() || undefined,
     });
     setLoading(false);

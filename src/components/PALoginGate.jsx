@@ -6,17 +6,24 @@ import { Label } from "@/components/ui/label";
 
 const PA_PASSWORD = "ILOVEPA";
 const SESSION_KEY = "pa_portal_auth";
+const SESSION_EMAIL_KEY = "pa_portal_email";
 
 export function isPAAuthenticated() {
   return sessionStorage.getItem(SESSION_KEY) === "true";
 }
 
-export function setPAAuthenticated() {
+export function getPAEmail() {
+  return sessionStorage.getItem(SESSION_EMAIL_KEY) || "";
+}
+
+export function setPAAuthenticated(email) {
   sessionStorage.setItem(SESSION_KEY, "true");
+  sessionStorage.setItem(SESSION_EMAIL_KEY, email);
 }
 
 export default function PALoginGate({ children }) {
   const [authed, setAuthed] = useState(isPAAuthenticated());
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -25,8 +32,12 @@ export default function PALoginGate({ children }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!email.trim() || !email.toLowerCase().endsWith("@pa.gov.sg")) {
+      setError("Please enter a valid @pa.gov.sg email address.");
+      return;
+    }
     if (password === PA_PASSWORD) {
-      setPAAuthenticated();
+      setPAAuthenticated(email.trim().toLowerCase());
       setAuthed(true);
       setError("");
     } else {
@@ -48,6 +59,19 @@ export default function PALoginGate({ children }) {
       </div>
 
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
+        <div className="space-y-2">
+          <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            PA Email Address
+          </Label>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setError(""); }}
+            placeholder="yourname@pa.gov.sg"
+            className="font-sans"
+            autoFocus
+          />
+        </div>
         <div className="space-y-2">
           <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">
             Password
