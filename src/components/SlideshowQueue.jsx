@@ -1,19 +1,16 @@
 import { useMemo } from "react";
 import { Clock, Monitor } from "lucide-react";
 
-// Slideshow rotates every 8 seconds, 2 slides per page
 const SECONDS_PER_PAGE = 8;
 
 export default function SlideshowQueue({ photos, messages }) {
   const queueInfo = useMemo(() => {
-    // Interleave photos and messages just like the slideshow does
     const slides = [];
     const maxLen = Math.max(photos.length, messages.length);
     for (let i = 0; i < maxLen; i++) {
       if (i < photos.length) slides.push({ type: "photo", id: photos[i].id, uploader_name: photos[i].uploader_name, recipient: photos[i].recipient });
       if (i < messages.length) slides.push({ type: "message", id: messages[i].id, uploader_name: messages[i].uploader_name, recipient: messages[i].recipient });
     }
-    // Each page shows 2 slides
     return slides.map((slide, idx) => {
       const pageIndex = Math.floor(idx / 2);
       const secondsUntil = pageIndex * SECONDS_PER_PAGE;

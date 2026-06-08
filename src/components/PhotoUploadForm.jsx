@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
-import ConfirmDialog from "./ConfirmDialog";
+import ConfirmDialog from "./ConfirmDialog.jsx";
 
 export default function PhotoUploadForm({ eventId }) {
   const [name, setName] = useState("");
@@ -27,7 +27,7 @@ export default function PhotoUploadForm({ eventId }) {
     }
     const isHeic = f.type === "image/heic" || f.type === "image/heif" || f.name.toLowerCase().endsWith(".heic") || f.name.toLowerCase().endsWith(".heif");
     if (isHeic) {
-      toast.error("HEIC/HEIF photos are not supported. Please convert to JPG or PNG first (e.g. take a screenshot, or use your phone's settings to change the camera format).");
+      toast.error("HEIC/HEIF photos are not supported. Please convert to JPG or PNG first.");
       return;
     }
     setFile(f);

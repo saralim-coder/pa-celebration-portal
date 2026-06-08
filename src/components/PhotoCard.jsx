@@ -1,6 +1,6 @@
 import { Download, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ConfirmDialog from "./ConfirmDialog";
+import ConfirmDialog from "./ConfirmDialog.jsx";
 
 export default function PhotoCard({ photo }) {
 
@@ -44,7 +44,6 @@ export default function PhotoCard({ photo }) {
           </div>
         </div>
       </div>
-
     </>
   );
 }

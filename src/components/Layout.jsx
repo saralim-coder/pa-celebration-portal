@@ -11,11 +11,10 @@ export default function Layout() {
   const location = useLocation();
   const isSlideshow = location.pathname === "/slideshow";
 
-  if (isSlideshow) return null; // handled by separate routes now
+  if (isSlideshow) return null;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
@@ -43,12 +42,10 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-10">
         <Outlet />
       </main>
 
-      {/* Mobile Bottom Nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
         <div className="flex items-center justify-around py-2 px-2">
           {navItems.map(({ path, label, icon: Icon }) => (
@@ -68,7 +65,6 @@ export default function Layout() {
         </div>
       </nav>
 
-      {/* Mobile bottom spacing */}
       <div className="md:hidden h-20" />
     </div>
   );
