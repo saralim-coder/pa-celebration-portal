@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
 import { Link } from "react-router-dom";
-import { Plus, Calendar, ExternalLink, Trash2, Loader2, Lock } from "lucide-react";
+import { Plus, Calendar, ExternalLink, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,21 +10,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import GoldDivider from "../components/GoldDivider";
-
-const PA_DOMAIN = "@pa.gov.sg";
+import PALoginGate from "../components/PALoginGate";
 
 export default function MyEvents() {
-  const { user, isAuthenticated, navigateToLogin } = useAuth();
   const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
   const [deleting, setDeleting] = useState(null);
 
-  const isPA = isAuthenticated && user?.email?.endsWith(PA_DOMAIN);
-
   const { data: events = [], isLoading } = useQuery({
-    queryKey: ["my-events", user?.id],
-    queryFn: () => base44.entities.Event.filter({ organizer_email: user.email }, "-created_date"),
-    enabled: !!isPA,
+    queryKey: ["my-events"],
+    queryFn: () => base44.entities.Event.list("-created_date"),
   });
 
   const handleDelete = async (eventId) => {
@@ -36,40 +30,8 @@ export default function MyEvents() {
     setDeleting(null);
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
-        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-          <Lock className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <h2 className="font-serif text-2xl font-semibold mb-2">Sign In Required</h2>
-          <p className="font-sans text-sm text-muted-foreground max-w-xs">
-            Please sign in with your @pa.gov.sg account to create and manage events.
-          </p>
-        </div>
-        <Button onClick={navigateToLogin} className="font-sans">Sign In</Button>
-      </div>
-    );
-  }
-
-  if (!isPA) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
-        <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
-          <Lock className="w-6 h-6 text-muted-foreground" />
-        </div>
-        <div>
-          <h2 className="font-serif text-2xl font-semibold mb-2">Access Restricted</h2>
-          <p className="font-sans text-sm text-muted-foreground max-w-xs">
-            Only PA staff with an @pa.gov.sg email can create events.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
+    <PALoginGate>
     <div className="animate-fade-in max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -137,18 +99,18 @@ export default function MyEvents() {
       <CreateEventDialog
         open={showCreate}
         onOpenChange={setShowCreate}
-        user={user}
-        onCreated={(event) => {
+        onCreated={() => {
           queryClient.invalidateQueries({ queryKey: ["my-events"] });
           setShowCreate(false);
           toast.success("Event created!");
         }}
       />
     </div>
+    </PALoginGate>
   );
 }
 
-function CreateEventDialog({ open, onOpenChange, user, onCreated }) {
+function CreateEventDialog({ open, onOpenChange, onCreated }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -163,8 +125,8 @@ function CreateEventDialog({ open, onOpenChange, user, onCreated }) {
       title: title.trim(),
       description: description.trim() || undefined,
       ceremony_date: date || undefined,
-      organizer_name: user.full_name || user.email,
-      organizer_email: user.email,
+      organizer_name: "PA Staff",
+      organizer_email: "pa@pa.gov.sg",
       slideshow_password: password.trim() || undefined,
     });
     setLoading(false);
