@@ -1,29 +1,41 @@
 {
-  "name": "Message",
+  "name": "Event",
   "type": "object",
   "properties": {
-    "event_id": {
+    "title": {
       "type": "string",
-      "title": "Event ID"
+      "title": "Event Title"
     },
-    "uploader_name": {
+    "description": {
       "type": "string",
-      "title": "Uploader Name"
+      "title": "Description"
     },
-    "recipient": {
+    "ceremony_date": {
       "type": "string",
-      "title": "Recipient"
+      "format": "date",
+      "title": "Ceremony Date"
     },
-    "content": {
+    "organizer_name": {
       "type": "string",
-      "title": "Message Content"
+      "title": "Organizer Name"
+    },
+    "organizer_email": {
+      "type": "string",
+      "title": "Organizer Email"
+    },
+    "logo_url": {
+      "type": "string",
+      "title": "Custom Logo URL"
+    },
+    "slideshow_password": {
+      "type": "string",
+      "title": "Slideshow Password"
     }
   },
   "required": [
-    "event_id",
-    "uploader_name",
-    "recipient",
-    "content"
+    "title",
+    "organizer_name",
+    "organizer_email"
   ],
   "rls": {
     "create": {},

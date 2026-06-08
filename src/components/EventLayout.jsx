@@ -1,26 +1,36 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { Home, CalendarDays } from "lucide-react";
+import { Outlet, Link, useLocation, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { Camera, Image, Home, Monitor } from "lucide-react";
 
-const navItems = [
-  { path: "/", label: "Home", icon: Home },
-  { path: "/my-events", label: "My Events", icon: CalendarDays },
-];
-
-export default function Layout() {
+export default function EventLayout() {
+  const { eventId } = useParams();
   const location = useLocation();
-  const isSlideshow = location.pathname === "/slideshow";
 
-  if (isSlideshow) return null; // handled by separate routes now
+  const { data: event } = useQuery({
+    queryKey: ["event", eventId],
+    queryFn: () => base44.entities.Event.get(eventId),
+  });
+
+  const navItems = [
+    { path: `/event/${eventId}`, label: "Home", icon: Home },
+    { path: `/event/${eventId}/upload`, label: "Upload", icon: Camera },
+    { path: `/event/${eventId}/gallery`, label: "Gallery", icon: Image },
+    { path: `/event/${eventId}/slideshow`, label: "Slideshow", icon: Monitor },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png" alt="People's Association Logo" className="w-10 h-10 object-contain" />
-            <h1 className="font-serif text-xl md:text-2xl font-semibold text-foreground tracking-tight">
-            PA Celebration Portal
+          <Link to={`/event/${eventId}`} className="flex items-center gap-3">
+            <img
+              src={event?.logo_url || "https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png"}
+              alt="Logo"
+              className="w-10 h-10 object-contain"
+            />
+            <h1 className="font-serif text-xl md:text-2xl font-semibold text-foreground tracking-tight truncate max-w-xs md:max-w-sm">
+              {event?.title || "Loading…"}
             </h1>
           </Link>
           <nav className="hidden md:flex items-center gap-1">
@@ -42,12 +52,10 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-10">
         <Outlet />
       </main>
 
-      {/* Mobile Bottom Nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
         <div className="flex items-center justify-around py-2 px-2">
           {navItems.map(({ path, label, icon: Icon }) => (
@@ -55,9 +63,7 @@ export default function Layout() {
               key={path}
               to={path}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${
-                location.pathname === path
-                  ? "text-primary"
-                  : "text-muted-foreground"
+                location.pathname === path ? "text-primary" : "text-muted-foreground"
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -66,8 +72,6 @@ export default function Layout() {
           ))}
         </div>
       </nav>
-
-      {/* Mobile bottom spacing */}
       <div className="md:hidden h-20" />
     </div>
   );

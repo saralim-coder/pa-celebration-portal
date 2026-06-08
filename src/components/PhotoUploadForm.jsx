@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import ConfirmDialog from "./ConfirmDialog";
 
-export default function PhotoUploadForm() {
+export default function PhotoUploadForm({ eventId }) {
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
   const [caption, setCaption] = useState("");
@@ -52,6 +52,7 @@ export default function PhotoUploadForm() {
     setLoading(true);
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     await base44.entities.Photo.create({
+      event_id: eventId,
       uploader_name: name.trim(),
       recipient: recipient.trim(),
       image_url: file_url,

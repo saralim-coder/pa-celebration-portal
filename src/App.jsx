@@ -6,15 +6,17 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Layout from './components/Layout';
+import EventLayout from './components/EventLayout';
 import Home from './pages/Home';
-import Upload from './pages/Upload';
-import Gallery from './pages/Gallery';
-import Slideshow from './pages/Slideshow';
+import MyEvents from './pages/MyEvents';
+import EventHome from './pages/EventHome';
+import EventUpload from './pages/EventUpload';
+import EventGallery from './pages/EventGallery';
+import EventSlideshow from './pages/EventSlideshow';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
-  // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
@@ -23,34 +25,36 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
       navigateToLogin();
       return null;
     }
   }
 
-  // Render the main app
   return (
     <Routes>
+      {/* Main portal */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/upload" element={<Upload />} />
-        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/my-events" element={<MyEvents />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
-      <Route path="/slideshow" element={<Slideshow />} />
+
+      {/* Event-scoped routes */}
+      <Route path="/event/:eventId" element={<EventLayout />}>
+        <Route index element={<EventHome />} />
+        <Route path="upload" element={<EventUpload />} />
+        <Route path="gallery" element={<EventGallery />} />
+      </Route>
+      <Route path="/event/:eventId/slideshow" element={<EventSlideshow />} />
     </Routes>
   );
 };
 
-
 function App() {
-
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>

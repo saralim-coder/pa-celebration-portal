@@ -2,6 +2,10 @@
   "name": "Photo",
   "type": "object",
   "properties": {
+    "event_id": {
+      "type": "string",
+      "title": "Event ID"
+    },
     "uploader_name": {
       "type": "string",
       "title": "Uploader Name"
@@ -20,6 +24,7 @@
     }
   },
   "required": [
+    "event_id",
     "uploader_name",
     "recipient",
     "image_url"
