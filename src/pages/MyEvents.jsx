@@ -26,9 +26,13 @@ export default function MyEvents() {
 
   const handleDelete = async (eventId) => {
     setDeleting(eventId);
-    await base44.entities.Event.delete(eventId);
+    try {
+      await base44.entities.Event.delete(eventId);
+      toast.success("Event deleted");
+    } catch (err) {
+      toast.error("Could not delete event. It may have already been removed.");
+    }
     queryClient.invalidateQueries({ queryKey: ["my-events"] });
-    toast.success("Event deleted");
     setDeleting(null);
   };
 
