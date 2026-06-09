@@ -113,6 +113,7 @@ export default function MyEvents() {
 }
 
 function CreateEventDialog({ open, onOpenChange, onCreated }) {
+  const [eventCode, setEventCode] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -125,6 +126,7 @@ function CreateEventDialog({ open, onOpenChange, onCreated }) {
     if (!title.trim()) { toast.error("Event title is required"); return; }
     setLoading(true);
     const event = await base44.entities.Event.create({
+      event_code: eventCode.trim() || undefined,
       title: title.trim(),
       description: description.trim() || undefined,
       ceremony_date: date || undefined,
@@ -134,7 +136,7 @@ function CreateEventDialog({ open, onOpenChange, onCreated }) {
       screen_size: screenSize,
     });
     setLoading(false);
-    setTitle(""); setDescription(""); setDate(""); setPassword(""); setScreenSize("16:9");
+    setEventCode(""); setTitle(""); setDescription(""); setDate(""); setPassword(""); setScreenSize("16:9");
     onCreated(event);
   };
 
@@ -145,6 +147,11 @@ function CreateEventDialog({ open, onOpenChange, onCreated }) {
           <DialogTitle className="font-serif text-xl">Create New Event</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+          <div className="space-y-2">
+            <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">Event ID / Code</Label>
+            <Input value={eventCode} onChange={(e) => setEventCode(e.target.value)} placeholder="e.g. PA2026-001" className="font-sans text-sm" />
+            <p className="font-sans text-xs text-muted-foreground">Optional short code to identify this event.</p>
+          </div>
           <div className="space-y-2">
             <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">Event Title *</Label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Long Service Awards 2026" className="font-sans text-sm" />

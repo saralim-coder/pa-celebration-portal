@@ -2,6 +2,10 @@
   "name": "Event",
   "type": "object",
   "properties": {
+    "event_code": {
+      "type": "string",
+      "title": "Event ID / Code"
+    },
     "title": {
       "type": "string",
       "title": "Event Title"
