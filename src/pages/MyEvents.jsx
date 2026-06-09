@@ -42,7 +42,7 @@ export default function MyEvents() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="font-serif text-3xl font-semibold text-foreground">My Events</h2>
-          <p className="font-sans text-sm text-muted-foreground mt-1">Manage your events</p>
+          <p className="font-sans text-sm text-muted-foreground mt-1">Manage your ceremony events</p>
         </div>
         <Button onClick={() => setShowCreate(true)} className="font-sans gap-2">
           <Plus className="w-4 h-4" /> New Event
