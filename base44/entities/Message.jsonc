@@ -17,6 +17,10 @@
     "content": {
       "type": "string",
       "title": "Message Content"
+    },
+    "organizer_user_id": {
+      "type": "string",
+      "title": "Organizer User ID"
     }
   },
   "required": [
@@ -37,6 +41,9 @@
           "user_condition": {
             "role": "admin"
           }
+        },
+        {
+          "data.organizer_user_id": "{{user.id}}"
         }
       ]
     },
@@ -49,6 +56,9 @@
           "user_condition": {
             "role": "admin"
           }
+        },
+        {
+          "data.organizer_user_id": "{{user.id}}"
         }
       ]
     }
