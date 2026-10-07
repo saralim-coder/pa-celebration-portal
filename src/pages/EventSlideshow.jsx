@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
+import Footer from "@/components/Footer";
 
 const SCREEN_SIZES = [
   { id: "16:9", label: "16:9 Widescreen", description: "Standard HD / projector", width: 1920, height: 1080 },
@@ -163,6 +164,7 @@ export default function EventSlideshow() {
             <Link to={`/event/${eventId}/gallery`}>← Back to Gallery</Link>
           </Button>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -213,6 +215,7 @@ export default function EventSlideshow() {
             </Button>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
