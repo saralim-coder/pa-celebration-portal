@@ -2,6 +2,7 @@ import { Outlet, Link, useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Camera, Image, Home, Monitor } from "lucide-react";
+import Footer from "./Footer";
 
 export default function EventLayout() {
   const { eventId } = useParams();
@@ -55,6 +56,8 @@ export default function EventLayout() {
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-10">
         <Outlet />
       </main>
+
+      <Footer />
 
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
         <div className="flex items-center justify-around py-2 px-2">

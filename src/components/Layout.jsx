@@ -1,5 +1,6 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { Home, CalendarDays, LayoutDashboard } from "lucide-react";
+import Footer from "./Footer";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
@@ -47,6 +48,8 @@ export default function Layout() {
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-10">
         <Outlet />
       </main>
+
+      <Footer />
 
       {/* Mobile Bottom Nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
