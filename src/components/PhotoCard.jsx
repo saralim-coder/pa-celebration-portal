@@ -1,8 +1,11 @@
-import { Download, User, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Download, User, ArrowRight, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "./ConfirmDialog";
 
-export default function PhotoCard({ photo }) {
+export default function PhotoCard({ photo, canDelete = false, onDelete }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleDownload = async () => {
     const response = await fetch(photo.image_url);
@@ -17,6 +20,16 @@ export default function PhotoCard({ photo }) {
     URL.revokeObjectURL(url);
   };
 
+  const handleDelete = async () => {
+    setConfirmOpen(false);
+    setDeleting(true);
+    try {
+      await onDelete(photo.id);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <>
       <div className="group relative bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
@@ -27,6 +40,19 @@ export default function PhotoCard({ photo }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>
+        {canDelete && (
+          <div className="absolute top-2 right-2">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 bg-background/80 backdrop-blur-sm shadow-sm hover:bg-destructive hover:text-destructive-foreground"
+              onClick={() => setConfirmOpen(true)}
+              disabled={deleting}
+            >
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+            </Button>
+          </div>
+        )}
         <div className="p-3 space-y-2">
           <div className="flex items-center gap-2 text-xs font-sans text-muted-foreground">
             <User className="w-3 h-3" />
@@ -45,6 +71,15 @@ export default function PhotoCard({ photo }) {
         </div>
       </div>
 
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete this photo?"
+        description="This photo will be permanently removed from the gallery. This action cannot be undone."
+        onConfirm={handleDelete}
+        confirmLabel="Delete"
+        variant="destructive"
+      />
     </>
   );
 }

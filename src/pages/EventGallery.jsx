@@ -1,7 +1,10 @@
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
+import { getPAEmail } from "../components/PALoginGate";
+import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, MessageSquare, Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +28,46 @@ export default function EventGallery() {
     queryKey: ["messages", eventId],
     queryFn: () => base44.entities.Message.filter({ event_id: eventId }, "-created_date"),
   });
+
+  const { data: event } = useQuery({
+    queryKey: ["event", eventId],
+    queryFn: () => base44.entities.Event.get(eventId),
+  });
+
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const paEmail = getPAEmail();
+  const canDelete =
+    (user && event && event.created_by_id === user.id) ||
+    (event && paEmail && event.organizer_email === paEmail);
+
+  const handleDeletePhoto = async (photoId) => {
+    try {
+      await base44.functions.invoke("delete-event-item", {
+        item_id: photoId,
+        type: "photo",
+        organizer_email: paEmail,
+      });
+      toast.success("Photo deleted");
+      queryClient.invalidateQueries({ queryKey: ["photos", eventId] });
+    } catch {
+      toast.error("Could not delete photo. Please try again.");
+    }
+  };
+
+  const handleDeleteMessage = async (messageId) => {
+    try {
+      await base44.functions.invoke("delete-event-item", {
+        item_id: messageId,
+        type: "message",
+        organizer_email: paEmail,
+      });
+      toast.success("Message deleted");
+      queryClient.invalidateQueries({ queryKey: ["messages", eventId] });
+    } catch {
+      toast.error("Could not delete message. Please try again.");
+    }
+  };
 
   const allRecipients = useMemo(() => {
     const set = new Set([...photos.map((p) => p.recipient), ...messages.map((m) => m.recipient)]);
@@ -133,7 +176,7 @@ export default function EventGallery() {
               <EmptyState type="photos" />
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {filteredPhotos.map((photo) => <PhotoCard key={photo.id} photo={photo} />)}
+                {filteredPhotos.map((photo) => <PhotoCard key={photo.id} photo={photo} canDelete={canDelete} onDelete={handleDeletePhoto} />)}
               </div>
             )}
           </TabsContent>
@@ -143,7 +186,7 @@ export default function EventGallery() {
               <EmptyState type="messages" />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredMessages.map((message) => <MessageCard key={message.id} message={message} />)}
+                {filteredMessages.map((message) => <MessageCard key={message.id} message={message} canDelete={canDelete} onDelete={handleDeleteMessage} />)}
               </div>
             )}
           </TabsContent>
