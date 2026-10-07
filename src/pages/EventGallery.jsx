@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { getPAEmail } from "../components/PALoginGate";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, MessageSquare, Loader2, Download } from "lucide-react";
@@ -36,18 +35,11 @@ export default function EventGallery() {
 
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const paEmail = getPAEmail();
-  const canDelete =
-    (user && event && event.created_by_id === user.id) ||
-    (event && paEmail && event.organizer_email === paEmail);
+  const canDelete = !!(user && event && event.created_by_id === user.id);
 
   const handleDeletePhoto = async (photoId) => {
     try {
-      await base44.functions.invoke("delete-event-item", {
-        item_id: photoId,
-        type: "photo",
-        organizer_email: paEmail,
-      });
+      await base44.entities.Photo.delete(photoId);
       toast.success("Photo deleted");
       queryClient.invalidateQueries({ queryKey: ["photos", eventId] });
     } catch {
@@ -57,11 +49,7 @@ export default function EventGallery() {
 
   const handleDeleteMessage = async (messageId) => {
     try {
-      await base44.functions.invoke("delete-event-item", {
-        item_id: messageId,
-        type: "message",
-        organizer_email: paEmail,
-      });
+      await base44.entities.Message.delete(messageId);
       toast.success("Message deleted");
       queryClient.invalidateQueries({ queryKey: ["messages", eventId] });
     } catch {

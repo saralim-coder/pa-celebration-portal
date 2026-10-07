@@ -44,10 +44,10 @@ export default function EventUpload() {
         </TabsList>
         <div className="mt-6 bg-card rounded-xl border border-border/50 p-6">
           <TabsContent value="photo" className="mt-0">
-            <PhotoUploadForm eventId={eventId} />
+            <PhotoUploadForm eventId={eventId} organizerUserId={event?.created_by_id} />
           </TabsContent>
           <TabsContent value="message" className="mt-0">
-            <MessageUploadForm eventId={eventId} />
+            <MessageUploadForm eventId={eventId} organizerUserId={event?.created_by_id} />
           </TabsContent>
         </div>
       </Tabs>

@@ -21,6 +21,10 @@
     "caption": {
       "type": "string",
       "title": "Caption"
+    },
+    "organizer_user_id": {
+      "type": "string",
+      "title": "Organizer User ID"
     }
   },
   "required": [
@@ -41,6 +45,9 @@
           "user_condition": {
             "role": "admin"
           }
+        },
+        {
+          "data.organizer_user_id": "{{user.id}}"
         }
       ]
     },
@@ -53,6 +60,9 @@
           "user_condition": {
             "role": "admin"
           }
+        },
+        {
+          "data.organizer_user_id": "{{user.id}}"
         }
       ]
     }

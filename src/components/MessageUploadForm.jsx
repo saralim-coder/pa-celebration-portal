@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import ConfirmDialog from "./ConfirmDialog";
 
-export default function MessageUploadForm({ eventId }) {
+export default function MessageUploadForm({ eventId, organizerUserId }) {
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
   const [content, setContent] = useState("");
@@ -30,6 +30,7 @@ export default function MessageUploadForm({ eventId }) {
       uploader_name: name.trim(),
       recipient: recipient.trim(),
       content: content.trim(),
+      organizer_user_id: organizerUserId || undefined,
     });
     toast.success("Message submitted successfully!");
     setName("");

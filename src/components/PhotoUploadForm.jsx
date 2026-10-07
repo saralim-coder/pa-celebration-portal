@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import ConfirmDialog from "./ConfirmDialog";
 
-export default function PhotoUploadForm({ eventId }) {
+export default function PhotoUploadForm({ eventId, organizerUserId }) {
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
   const [caption, setCaption] = useState("");
@@ -57,6 +57,7 @@ export default function PhotoUploadForm({ eventId }) {
       recipient: recipient.trim(),
       image_url: file_url,
       caption: caption.trim() || undefined,
+      organizer_user_id: organizerUserId || undefined,
     });
     toast.success("Photo uploaded successfully!");
     setName("");
