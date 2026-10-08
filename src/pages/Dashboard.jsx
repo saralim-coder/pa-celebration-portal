@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { CalendarDays, Image, MessageSquare, Users, Loader2 } from "lucide-react";
 import GoldDivider from "../components/GoldDivider";
@@ -22,6 +23,18 @@ function StatCard({ icon: Icon, label, value, color, isLoading }) {
 }
 
 export default function Dashboard() {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const unsubPhoto = base44.entities.Photo.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ["all-photos"] });
+    });
+    const unsubMsg = base44.entities.Message.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ["all-messages"] });
+    });
+    return () => { unsubPhoto(); unsubMsg(); };
+  }, [queryClient]);
+
   const { data: events = [], isLoading: loadingEvents } = useQuery({
     queryKey: ["all-events"],
     queryFn: () => base44.entities.Event.list("-created_date"),
