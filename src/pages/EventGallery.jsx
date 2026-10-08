@@ -11,11 +11,13 @@ import MessageCard from "../components/MessageCard";
 import FilterBar from "../components/FilterBar";
 import GoldDivider from "../components/GoldDivider";
 import SlideshowQueue from "../components/SlideshowQueue";
+import { PA_DIVISIONS } from "@/utils/divisions";
 
 export default function EventGallery() {
   const { eventId } = useParams();
   const [search, setSearch] = useState("");
   const [recipient, setRecipient] = useState("all");
+  const [division, setDivision] = useState("all");
 
   const { data: photos = [], isLoading: loadingPhotos } = useQuery({
     queryKey: ["photos", eventId],
@@ -71,9 +73,15 @@ export default function EventGallery() {
     return [...set].sort();
   }, [photos, messages]);
 
+  const availableDivisions = useMemo(() => {
+    const used = new Set([...photos.map((p) => p.division), ...messages.map((m) => m.division)].filter(Boolean));
+    return PA_DIVISIONS.filter((d) => used.has(d.short));
+  }, [photos, messages]);
+
   const filterItems = (items) => {
     return items.filter((item) => {
       const matchRecipient = recipient === "all" || item.recipient === recipient;
+      const matchDivision = division === "all" || item.division === division;
       const searchLower = search.toLowerCase();
       const matchSearch =
         !search ||
@@ -81,7 +89,7 @@ export default function EventGallery() {
         item.recipient?.toLowerCase().includes(searchLower) ||
         item.content?.toLowerCase().includes(searchLower) ||
         item.caption?.toLowerCase().includes(searchLower);
-      return matchRecipient && matchSearch;
+      return matchRecipient && matchDivision && matchSearch;
     });
   };
 
@@ -137,7 +145,7 @@ export default function EventGallery() {
         <p className="font-sans text-xs text-muted-foreground/70 pt-1">More hearts make the glow stronger ✨</p>
       </div>
 
-      <FilterBar search={search} onSearchChange={setSearch} recipient={recipient} onRecipientChange={setRecipient} recipients={allRecipients} />
+      <FilterBar search={search} onSearchChange={setSearch} recipient={recipient} onRecipientChange={setRecipient} recipients={allRecipients} division={division} onDivisionChange={setDivision} divisions={availableDivisions} />
       <GoldDivider className="my-6" />
 
       {!isLoading && <SlideshowQueue photos={photos} messages={messages} />}

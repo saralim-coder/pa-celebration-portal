@@ -2,7 +2,7 @@ import { Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function FilterBar({ search, onSearchChange, recipient, onRecipientChange, recipients }) {
+export default function FilterBar({ search, onSearchChange, recipient, onRecipientChange, recipients, division, onDivisionChange, divisions }) {
   return (
     <div className="flex flex-col sm:flex-row gap-3">
       <div className="relative flex-1">
@@ -26,6 +26,20 @@ export default function FilterBar({ search, onSearchChange, recipient, onRecipie
           ))}
         </SelectContent>
       </Select>
+      {divisions?.length > 0 && (
+        <Select value={division} onValueChange={onDivisionChange}>
+          <SelectTrigger className="w-full sm:w-56 font-sans text-sm bg-card border-border/50">
+            <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
+            <SelectValue placeholder="Filter by division" />
+          </SelectTrigger>
+          <SelectContent className="bg-card">
+            <SelectItem value="all" className="font-sans text-sm">All Divisions</SelectItem>
+            {divisions.map((d) => (
+              <SelectItem key={d.short} value={d.short} className="font-sans text-sm">{d.short} — {d.full}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
     </div>
   );
 }
