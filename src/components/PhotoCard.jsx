@@ -6,7 +6,17 @@ import VoteButton from "./VoteButton";
 import ShareButton from "./ShareButton";
 import { getGlowStyle } from "@/utils/glow";
 
-export default function PhotoCard({ photo, onDelete, onVote }) {
+export default function PhotoCard({ photo, onDelete, onVote, highlight }) {
+  const shareUrl = (() => {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("photo", photo.id);
+      url.hash = "";
+      return url.toString();
+    } catch {
+      return window.location.href;
+    }
+  })();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -35,7 +45,7 @@ export default function PhotoCard({ photo, onDelete, onVote }) {
 
   return (
     <>
-      <div className="group relative bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5" style={getGlowStyle(photo.votes)}>
+      <div id={`photo-${photo.id}`} className={`group relative bg-card rounded-lg overflow-hidden border ${highlight ? "border-primary shadow-lg shadow-primary/30" : "border-border/50"} hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5`} style={getGlowStyle(photo.votes)}>
         <div className="aspect-square overflow-hidden">
           <img
             src={photo.image_url}
@@ -69,6 +79,7 @@ export default function PhotoCard({ photo, onDelete, onVote }) {
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>
             <ShareButton
+              url={shareUrl}
               title={`Photo for ${photo.recipient}`}
               text={`A special moment for ${photo.recipient} from ${photo.uploader_name}`}
               imageUrl={photo.image_url}

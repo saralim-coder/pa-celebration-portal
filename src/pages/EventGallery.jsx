@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -18,6 +18,10 @@ export default function EventGallery() {
   const [search, setSearch] = useState("");
   const [recipient, setRecipient] = useState("all");
   const [division, setDivision] = useState("all");
+
+  const focusPhoto = new URLSearchParams(window.location.search).get("photo");
+  const focusMessage = new URLSearchParams(window.location.search).get("message");
+  const [activeTab, setActiveTab] = useState(focusMessage ? "messages" : "photos");
 
   const { data: photos = [], isLoading: loadingPhotos } = useQuery({
     queryKey: ["photos", eventId],
@@ -137,6 +141,16 @@ export default function EventGallery() {
 
   const isLoading = loadingPhotos || loadingMessages;
 
+  useEffect(() => {
+    if (isLoading) return;
+    const focusId = focusPhoto ? `photo-${focusPhoto}` : focusMessage ? `message-${focusMessage}` : null;
+    if (!focusId) return;
+    const el = document.getElementById(focusId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [isLoading, focusPhoto, focusMessage]);
+
   return (
     <div className="animate-fade-in">
       <div className="text-center mb-8">
@@ -155,7 +169,7 @@ export default function EventGallery() {
           <Loader2 className="w-6 h-6 text-primary animate-spin" />
         </div>
       ) : (
-        <Tabs defaultValue="photos" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <TabsList className="bg-muted/50 h-10 rounded-lg">
               <TabsTrigger value="photos" className="font-sans text-sm gap-2 data-[state=active]:bg-card">
@@ -182,7 +196,7 @@ export default function EventGallery() {
               <EmptyState type="photos" />
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {filteredPhotos.map((photo) => <PhotoCard key={photo.id} photo={photo} onDelete={handleDeletePhoto} onVote={handleVotePhoto} />)}
+                {filteredPhotos.map((photo) => <PhotoCard key={photo.id} photo={photo} onDelete={handleDeletePhoto} onVote={handleVotePhoto} highlight={focusPhoto === photo.id} />)}
               </div>
             )}
           </TabsContent>
@@ -192,7 +206,7 @@ export default function EventGallery() {
               <EmptyState type="messages" />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredMessages.map((message) => <MessageCard key={message.id} message={message} onDelete={handleDeleteMessage} onVote={handleVoteMessage} />)}
+                {filteredMessages.map((message) => <MessageCard key={message.id} message={message} onDelete={handleDeleteMessage} onVote={handleVoteMessage} highlight={focusMessage === message.id} />)}
               </div>
             )}
           </TabsContent>

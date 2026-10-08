@@ -6,7 +6,17 @@ import VoteButton from "./VoteButton";
 import ShareButton from "./ShareButton";
 import { getGlowStyle } from "@/utils/glow";
 
-export default function MessageCard({ message, onDelete, onVote }) {
+export default function MessageCard({ message, onDelete, onVote, highlight }) {
+  const shareUrl = (() => {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("message", message.id);
+      url.hash = "";
+      return url.toString();
+    } catch {
+      return window.location.href;
+    }
+  })();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -35,7 +45,7 @@ export default function MessageCard({ message, onDelete, onVote }) {
 
   return (
     <>
-      <div className="group relative bg-card rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 p-5 hover:shadow-lg hover:shadow-primary/5" style={getGlowStyle(message.votes)}>
+      <div id={`message-${message.id}`} className={`group relative bg-card rounded-lg border ${highlight ? "border-primary shadow-lg shadow-primary/30" : "border-border/50"} hover:border-primary/30 transition-all duration-300 p-5 hover:shadow-lg hover:shadow-primary/5`} style={getGlowStyle(message.votes)}>
         <Quote className="w-5 h-5 text-primary/30 mb-3" />
         <p className="font-serif text-base md:text-lg text-foreground leading-relaxed mb-4">
           {message.content}
@@ -52,6 +62,7 @@ export default function MessageCard({ message, onDelete, onVote }) {
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>
             <ShareButton
+              url={shareUrl}
               title={`Message for ${message.recipient}`}
               text={`"${message.content}" — ${message.uploader_name} to ${message.recipient}`}
             />
