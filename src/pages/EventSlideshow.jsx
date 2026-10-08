@@ -140,7 +140,7 @@ export default function EventSlideshow() {
     }
     return (
       <div className="fixed inset-0 bg-background flex items-center justify-center">
-        <div className="bg-card border border-border rounded-2xl p-8 shadow-xl w-full max-w-sm space-y-6 text-center">
+        <div className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-xl w-full max-w-sm space-y-6 text-center">
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
             <Lock className="w-6 h-6 text-primary" />
           </div>
@@ -173,7 +173,7 @@ export default function EventSlideshow() {
   if (stage === "size") {
     return (
       <div className="fixed inset-0 bg-background flex items-center justify-center p-4">
-        <div className="bg-card border border-border rounded-2xl p-8 shadow-xl w-full max-w-lg space-y-6">
+        <div className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-xl w-full max-w-lg space-y-6">
           <div className="text-center">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <Monitor className="w-6 h-6 text-primary" />
@@ -246,17 +246,17 @@ export default function EventSlideshow() {
   return (
     <div className="fixed inset-0 bg-background flex flex-col overflow-hidden" style={canvasStyle}>
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center px-10 py-5 bg-gradient-to-b from-background/80 to-transparent">
-        <div className="w-48 shrink-0" />
-        <div className="flex-1 flex justify-center items-center gap-3">
+      <div className="absolute top-0 left-0 right-0 z-20 flex items-center px-4 md:px-10 py-3 md:py-5 bg-gradient-to-b from-background/80 to-transparent">
+        <div className="hidden md:block w-48 shrink-0" />
+        <div className="flex-1 flex justify-center items-center gap-2 md:gap-3 min-w-0">
           <img
             src={event?.logo_url || "https://media.base44.com/images/public/69dc9e0e6de364fb1172a03d/a0dff1aa1_IMG_2852.png"}
             alt="Logo"
-            className="w-10 h-10 object-contain"
+            className="w-8 h-8 md:w-10 md:h-10 object-contain shrink-0"
           />
-          <h1 className="text-foreground font-serif text-2xl font-semibold text-center">{event?.title}</h1>
+          <h1 className="text-foreground font-serif text-lg md:text-2xl font-semibold text-center truncate">{event?.title}</h1>
         </div>
-        <div className="flex items-center gap-3 w-48 shrink-0 justify-end">
+        <div className="flex items-center gap-2 md:gap-3 shrink-0 justify-end">
           <span className="font-sans text-sm text-muted-foreground">{currentIndex + 1} / {totalPages}</span>
           <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleFullscreen}>
             {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
@@ -268,7 +268,7 @@ export default function EventSlideshow() {
       </div>
 
       {/* Slide content */}
-      <div className="flex-1 flex items-stretch px-10 py-20 gap-0 overflow-hidden">
+      <div className="flex-1 flex items-stretch px-4 md:px-10 py-16 md:py-20 gap-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -278,10 +278,10 @@ export default function EventSlideshow() {
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="flex w-full items-center gap-0"
           >
-            <div className="flex-1 flex items-center justify-center px-6">
+            <div className="flex-1 flex items-center justify-center px-4 md:px-6">
               {leftSlide && (leftSlide.type === "photo" ? <PhotoSlide photo={leftSlide.data} /> : <MessageSlide message={leftSlide.data} />)}
             </div>
-            <div className="flex flex-col items-center justify-center gap-4 px-6 shrink-0">
+            <div className="hidden md:flex flex-col items-center justify-center gap-4 px-6 shrink-0">
               <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
               <div className="bg-card border border-border/50 rounded-2xl p-4 shadow-lg">
                 <QRCodeSVG value={window.location.origin + `/event/${eventId}/upload`} size={140} bgColor="transparent" fgColor="hsl(var(--primary))" level="M" />
@@ -290,7 +290,7 @@ export default function EventSlideshow() {
               <p className="font-sans text-[10px] text-muted-foreground/70 text-center max-w-[140px] leading-tight">Built by People's Association (PA) Human Resources Division</p>
               <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
             </div>
-            <div className="flex-1 flex items-center justify-center px-6">
+            <div className="hidden md:flex flex-1 items-center justify-center px-6">
               {rightSlide ? (
                 rightSlide.type === "photo" ? <PhotoSlide photo={rightSlide.data} /> : <MessageSlide message={rightSlide.data} />
               ) : (
@@ -305,7 +305,7 @@ export default function EventSlideshow() {
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-8 left-0 right-0 z-20 flex items-center justify-center gap-4">
+      <div className="absolute bottom-6 md:bottom-8 left-0 right-0 z-20 flex items-center justify-center gap-3 md:gap-4">
         <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goPrev}><SkipBack className="w-5 h-5" /></Button>
         <Button variant="outline" size="icon" className="h-14 w-14 rounded-full border-primary/30" onClick={() => setIsPlaying((p) => !p)}>
           {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
@@ -330,8 +330,8 @@ export default function EventSlideshow() {
 function PhotoSlide({ photo }) {
   return (
     <div className="flex flex-col items-center gap-5 w-full">
-      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5" style={{ height: 380 }}>
-        <img src={photo.image_url} alt="" style={{ maxWidth: "100%", maxHeight: "380px", width: "auto", height: "auto" }} />
+      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 h-[42vh] md:h-[380px]">
+        <img src={photo.image_url} alt="" className="max-w-full max-h-full w-auto h-auto object-contain" />
       </div>
       <div className="text-center space-y-2">
         {photo.caption && <p className="font-serif text-xl text-foreground italic">"{photo.caption}"</p>}
