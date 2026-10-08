@@ -359,12 +359,10 @@ function PhotoSlide({ photo }) {
           <ArrowRight className="w-4 h-4" />
           <span className="text-primary font-medium">{photo.recipient}</span>
         </div>
-        {photo.votes > 0 && (
-          <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
-            <Heart className="w-4 h-4 fill-primary" />
-            <span className="font-medium">{photo.votes}</span>
-          </div>
-        )}
+        <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
+          <Heart className="w-4 h-4 fill-primary" />
+          <span className="font-medium">{photo.votes || 0}</span>
+        </div>
         <p className="font-sans text-xs text-muted-foreground/70 pt-1">More hearts make the glow stronger ✨</p>
       </div>
     </div>
@@ -386,12 +384,10 @@ function MessageSlide({ message }) {
           <span className="text-primary font-medium">{message.recipient}</span>
         </div>
       </div>
-      {message.votes > 0 && (
-        <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
-          <Heart className="w-4 h-4 fill-primary" />
-          <span className="font-medium">{message.votes}</span>
-        </div>
-      )}
+      <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
+        <Heart className="w-4 h-4 fill-primary" />
+        <span className="font-medium">{message.votes || 0}</span>
+      </div>
       <p className="font-sans text-xs text-muted-foreground/70">More hearts make the glow stronger ✨</p>
     </div>
   );
