@@ -55,7 +55,7 @@ export default function EventSlideshow() {
     const reloadInterval = setInterval(() => {
       base44.entities.Photo.filter({ event_id: eventId }, "-created_date").then(setPhotos);
       base44.entities.Message.filter({ event_id: eventId }, "-created_date").then(setMessages);
-    }, 60000);
+    }, 15000);
 
     return () => { unsubPhoto(); unsubMsg(); clearInterval(reloadInterval); };
   }, [eventId]);
