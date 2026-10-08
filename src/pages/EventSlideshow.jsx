@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getGlowStyle } from "@/utils/glow";
 
 const SCREEN_SIZES = [
   { id: "16:9", label: "16:9 Widescreen", description: "Standard HD / projector", width: 1920, height: 1080 },
@@ -342,15 +343,6 @@ export default function EventSlideshow() {
       </div>
     </div>
   );
-}
-
-function getGlowStyle(votes) {
-  const v = votes || 0;
-  if (v === 0) return {};
-  const blur = Math.min(12 + v * 4, 80);
-  const spread = Math.min(v * 1.5, 24);
-  const opacity = Math.min(0.15 + v * 0.035, 0.7);
-  return { boxShadow: `0 0 ${blur}px ${spread}px rgba(212, 175, 55, ${opacity})` };
 }
 
 function PhotoSlide({ photo }) {

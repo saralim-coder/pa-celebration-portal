@@ -3,6 +3,7 @@ import { Download, User, ArrowRight, Quote, Trash2, Loader2 } from "lucide-react
 import { Button } from "@/components/ui/button";
 import DeletePasswordDialog from "./DeletePasswordDialog";
 import VoteButton from "./VoteButton";
+import { getGlowStyle } from "@/utils/glow";
 
 export default function MessageCard({ message, onDelete, onVote }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function MessageCard({ message, onDelete, onVote }) {
 
   return (
     <>
-      <div className="group relative bg-card rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 p-5 hover:shadow-lg hover:shadow-primary/5">
+      <div className="group relative bg-card rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 p-5 hover:shadow-lg hover:shadow-primary/5" style={getGlowStyle(message.votes)}>
         <Quote className="w-5 h-5 text-primary/30 mb-3" />
         <p className="font-serif text-base md:text-lg text-foreground leading-relaxed mb-4">
           {message.content}

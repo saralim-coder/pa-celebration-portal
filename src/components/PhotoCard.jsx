@@ -3,6 +3,7 @@ import { Download, User, ArrowRight, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeletePasswordDialog from "./DeletePasswordDialog";
 import VoteButton from "./VoteButton";
+import { getGlowStyle } from "@/utils/glow";
 
 export default function PhotoCard({ photo, onDelete, onVote }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function PhotoCard({ photo, onDelete, onVote }) {
 
   return (
     <>
-      <div className="group relative bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+      <div className="group relative bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5" style={getGlowStyle(photo.votes)}>
         <div className="aspect-square overflow-hidden">
           <img
             src={photo.image_url}
