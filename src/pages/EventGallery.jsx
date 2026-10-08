@@ -134,6 +134,7 @@ export default function EventGallery() {
       <div className="text-center mb-8">
         <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground mb-2">Gallery</h2>
         <p className="font-sans text-sm text-muted-foreground">Browse all photos and messages shared for the ceremony</p>
+        <p className="font-sans text-xs text-muted-foreground/70 pt-1">More hearts make the glow stronger ✨</p>
       </div>
 
       <FilterBar search={search} onSearchChange={setSearch} recipient={recipient} onRecipientChange={setRecipient} recipients={allRecipients} />
