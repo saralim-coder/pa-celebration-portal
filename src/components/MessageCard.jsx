@@ -3,6 +3,7 @@ import { Download, User, ArrowRight, Quote, Trash2, Loader2 } from "lucide-react
 import { Button } from "@/components/ui/button";
 import DeletePasswordDialog from "./DeletePasswordDialog";
 import VoteButton from "./VoteButton";
+import ShareButton from "./ShareButton";
 import { getGlowStyle } from "@/utils/glow";
 
 export default function MessageCard({ message, onDelete, onVote }) {
@@ -52,6 +53,10 @@ export default function MessageCard({ message, onDelete, onVote }) {
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>
+            <ShareButton
+              title={`Message for ${message.recipient}`}
+              text={`"${message.content}" — ${message.uploader_name} to ${message.recipient}`}
+            />
             <VoteButton itemId={message.id} votes={message.votes || 0} onVote={onVote} />
             <Button
               variant="ghost"

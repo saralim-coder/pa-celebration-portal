@@ -3,6 +3,7 @@ import { Download, User, ArrowRight, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeletePasswordDialog from "./DeletePasswordDialog";
 import VoteButton from "./VoteButton";
+import ShareButton from "./ShareButton";
 import { getGlowStyle } from "@/utils/glow";
 
 export default function PhotoCard({ photo, onDelete, onVote }) {
@@ -69,6 +70,11 @@ export default function PhotoCard({ photo, onDelete, onVote }) {
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>
+            <ShareButton
+              title={`Photo for ${photo.recipient}`}
+              text={`A special moment for ${photo.recipient} from ${photo.uploader_name}`}
+              imageUrl={photo.image_url}
+            />
             <VoteButton itemId={photo.id} votes={photo.votes || 0} onVote={onVote} />
           </div>
         </div>
