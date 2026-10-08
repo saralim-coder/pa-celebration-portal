@@ -11,16 +11,6 @@ export default function ShareButton({ title, text, url, imageUrl }) {
   const shareTitle = title || "PA Celebration Portal";
   const shareText = text || "Check out this moment from the ceremony!";
 
-  const handleNativeShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
-      } catch {
-        // user cancelled — no action needed
-      }
-    }
-  };
-
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
@@ -35,18 +25,6 @@ export default function ShareButton({ title, text, url, imageUrl }) {
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedText = encodeURIComponent(`${shareText} ${shareUrl}`);
 
-  const trigger = (
-    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={navigator.share ? handleNativeShare : undefined}>
-      <Share2 className="w-3 h-3 mr-1" /> Share
-    </Button>
-  );
-
-  // Native share available — single button triggers it directly
-  if (typeof navigator !== "undefined" && navigator.share) {
-    return trigger;
-  }
-
-  // Fallback — popover with social options
   return (
     <Popover>
       <PopoverTrigger asChild>
