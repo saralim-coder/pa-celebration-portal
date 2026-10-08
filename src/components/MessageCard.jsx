@@ -43,10 +43,10 @@ export default function MessageCard({ message, onDelete, onVote }) {
           <div className="flex items-center gap-2 text-xs font-sans text-muted-foreground">
             <User className="w-3 h-3" />
             <span>{message.uploader_name}</span>
-            {message.uploader_division && <span className="text-muted-foreground/70">({message.uploader_division})</span>}
+            {message.uploader_division && message.uploader_division !== "Unsure" && <span className="text-muted-foreground/70">({message.uploader_division})</span>}
             <ArrowRight className="w-3 h-3" />
             <span className="text-primary font-medium">{message.recipient}</span>
-            {message.division && <span className="text-muted-foreground/70">· {message.division}</span>}
+            {message.division && message.division !== "Unsure" && <span className="text-muted-foreground/70">· {message.division}</span>}
           </div>
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
