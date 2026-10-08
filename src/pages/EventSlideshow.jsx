@@ -347,10 +347,12 @@ function PhotoSlide({ photo }) {
 }
 
 function MessageSlide({ message }) {
+  const len = (message.content || "").length;
+  const fontSize = len > 400 ? "text-lg" : len > 250 ? "text-xl" : len > 150 ? "text-2xl" : "text-3xl";
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-6 px-4">
       <Quote className="w-10 h-10 text-primary/30" />
-      <p className="font-serif text-3xl text-foreground leading-relaxed">{message.content}</p>
+      <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl`}>{message.content}</p>
       <div className="flex items-center gap-2 text-base font-sans text-muted-foreground">
         <User className="w-4 h-4" />
         <span>{message.uploader_name}</span>
