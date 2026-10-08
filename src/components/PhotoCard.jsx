@@ -57,10 +57,10 @@ export default function PhotoCard({ photo, onDelete, onVote }) {
           <div className="flex items-center gap-2 text-xs font-sans text-muted-foreground">
             <User className="w-3 h-3" />
             <span>{photo.uploader_name}</span>
-            {photo.uploader_division && photo.uploader_division !== "Unsure" && <span className="text-muted-foreground/70">({photo.uploader_division})</span>}
+            {photo.uploader_division && photo.uploader_division !== "Leadership" && <span className="text-muted-foreground/70">({photo.uploader_division})</span>}
             <ArrowRight className="w-3 h-3" />
             <span className="text-primary font-medium">{photo.recipient}</span>
-            {photo.division && photo.division !== "Unsure" && <span className="text-muted-foreground/70">· {photo.division}</span>}
+            {photo.division && photo.division !== "Leadership" && <span className="text-muted-foreground/70">· {photo.division}</span>}
           </div>
           {photo.caption && (
             <p className="text-xs font-sans text-foreground/80 line-clamp-2">{photo.caption}</p>

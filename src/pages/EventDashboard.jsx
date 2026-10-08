@@ -43,18 +43,18 @@ export default function EventDashboard() {
 
   const all = [...photos, ...messages];
 
-  const stats = PA_DIVISIONS.filter((d) => d.short !== "Unsure").map((d) => {
+  const stats = PA_DIVISIONS.filter((d) => d.short !== "Leadership").map((d) => {
     const submitted = all.filter((x) => x.uploader_division === d.short).length;
     const received = all.filter((x) => x.division === d.short).length;
     return { ...d, submitted, received };
   });
 
-  // Include "Unsure" rows only if there's data. Records without a division
-  // (created before the field existed) count toward "Unsure".
-  const unsureSubmitted = all.filter((x) => !x.uploader_division || x.uploader_division === "Unsure").length;
-  const unsureReceived = all.filter((x) => !x.division || x.division === "Unsure").length;
+  // Include "Leadership" rows only if there's data. Records without a division
+  // (created before the field existed) count toward "Leadership".
+  const unsureSubmitted = all.filter((x) => !x.uploader_division || x.uploader_division === "Leadership").length;
+  const unsureReceived = all.filter((x) => !x.division || x.division === "Leadership").length;
   if (unsureSubmitted || unsureReceived) {
-    stats.push({ short: "Unsure", full: "Not sure which division", submitted: unsureSubmitted, received: unsureReceived });
+    stats.push({ short: "Leadership", full: "Leadership", submitted: unsureSubmitted, received: unsureReceived });
   }
 
   const totalSubmitted = all.length;

@@ -21,7 +21,7 @@ export default function DivisionSelect({ value, onChange, label = "Recipient Div
         <SelectContent>
           {PA_DIVISIONS.map((d) => (
             <SelectItem key={d.short} value={d.short}>
-              {d.short === "Unsure" ? "Unsure" : `${d.short} — ${d.full}`}
+              {d.short === "Leadership" ? "Leadership" : `${d.short} — ${d.full}`}
             </SelectItem>
           ))}
         </SelectContent>

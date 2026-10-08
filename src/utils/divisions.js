@@ -41,7 +41,7 @@ export const PA_DIVISIONS = [
   { short: "TO", full: "Transformation Office" },
   { short: "VM", full: "Volunteer Management" },
   { short: "Y&S", full: "Youth & Sports" },
-  { short: "Unsure", full: "Not sure which division" },
+  { short: "Leadership", full: "Leadership" },
 ];
 
 // Events that require the division selector.
