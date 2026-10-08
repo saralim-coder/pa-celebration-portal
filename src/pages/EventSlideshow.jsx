@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight, Maximize, Minimize, Lock, Monitor } from "lucide-react";
+import { Play, Pause, SkipForward, SkipBack, X, Loader2, Quote, User, ArrowRight, Maximize, Minimize, Lock, Monitor, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -341,6 +341,12 @@ function PhotoSlide({ photo }) {
           <ArrowRight className="w-4 h-4" />
           <span className="text-primary font-medium">{photo.recipient}</span>
         </div>
+        {photo.votes > 0 && (
+          <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
+            <Heart className="w-4 h-4 fill-primary" />
+            <span className="font-medium">{photo.votes}</span>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -359,6 +365,12 @@ function MessageSlide({ message }) {
         <ArrowRight className="w-4 h-4" />
         <span className="text-primary font-medium">{message.recipient}</span>
       </div>
+      {message.votes > 0 && (
+        <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
+          <Heart className="w-4 h-4 fill-primary" />
+          <span className="font-medium">{message.votes}</span>
+        </div>
+      )}
     </div>
   );
 }
