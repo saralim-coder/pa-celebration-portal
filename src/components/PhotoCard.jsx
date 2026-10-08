@@ -59,6 +59,7 @@ export default function PhotoCard({ photo, onDelete, onVote }) {
             <span>{photo.uploader_name}</span>
             <ArrowRight className="w-3 h-3" />
             <span className="text-primary font-medium">{photo.recipient}</span>
+            {photo.division && <span className="text-muted-foreground/70">· {photo.division}</span>}
           </div>
           {photo.caption && (
             <p className="text-xs font-sans text-foreground/80 line-clamp-2">{photo.caption}</p>

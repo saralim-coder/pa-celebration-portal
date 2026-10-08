@@ -7,17 +7,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import ConfirmDialog from "./ConfirmDialog";
+import DivisionSelect from "./DivisionSelect";
+import { isDivisionEvent } from "@/utils/divisions";
 
-export default function MessageUploadForm({ eventId, organizerUserId }) {
+export default function MessageUploadForm({ eventId, organizerUserId, eventTitle }) {
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [division, setDivision] = useState("");
   const [content, setContent] = useState("");
+
+  const showDivision = isDivisionEvent(eventTitle);
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmitClick = () => {
     if (!name.trim()) { toast.error("Please enter your name"); return; }
     if (!recipient.trim()) { toast.error("Please enter the recipient's name"); return; }
+    if (showDivision && !division) { toast.error("Please select the recipient's division"); return; }
     if (!content.trim()) { toast.error("Please write a message"); return; }
     setShowConfirm(true);
   };
@@ -29,12 +35,14 @@ export default function MessageUploadForm({ eventId, organizerUserId }) {
       event_id: eventId,
       uploader_name: name.trim(),
       recipient: recipient.trim(),
+      division: showDivision ? division : undefined,
       content: content.trim(),
       organizer_user_id: organizerUserId || undefined,
     });
     toast.success("Message submitted successfully!");
     setName("");
     setRecipient("");
+    setDivision("");
     setContent("");
     setLoading(false);
   };
@@ -60,6 +68,10 @@ export default function MessageUploadForm({ eventId, organizerUserId }) {
           </div>
         </div>
 
+        {showDivision && (
+          <DivisionSelect value={division} onChange={setDivision} />
+        )}
+
         <div className="space-y-2">
           <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">Your Message *</Label>
           <Textarea
@@ -81,7 +93,7 @@ export default function MessageUploadForm({ eventId, organizerUserId }) {
         open={showConfirm}
         onOpenChange={setShowConfirm}
         title="Confirm Submission"
-        description={`Send this message from "${name}" to "${recipient}"?`}
+        description={`Send this message from "${name}" to "${recipient}"${showDivision && division ? ` (${division})` : ""}?`}
         confirmLabel="Send"
         onConfirm={handleConfirmedSubmit}
       />

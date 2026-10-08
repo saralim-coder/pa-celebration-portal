@@ -7,11 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import ConfirmDialog from "./ConfirmDialog";
+import DivisionSelect from "./DivisionSelect";
+import { isDivisionEvent } from "@/utils/divisions";
 
-export default function PhotoUploadForm({ eventId, organizerUserId }) {
+export default function PhotoUploadForm({ eventId, organizerUserId, eventTitle }) {
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [division, setDivision] = useState("");
   const [caption, setCaption] = useState("");
+
+  const showDivision = isDivisionEvent(eventTitle);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,6 +48,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId }) {
   const handleSubmitClick = () => {
     if (!name.trim()) { toast.error("Please enter your name"); return; }
     if (!recipient.trim()) { toast.error("Please enter the recipient's name"); return; }
+    if (showDivision && !division) { toast.error("Please select the recipient's division"); return; }
     if (!file) { toast.error("Please select a photo"); return; }
     setShowConfirm(true);
   };
@@ -55,6 +61,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId }) {
       event_id: eventId,
       uploader_name: name.trim(),
       recipient: recipient.trim(),
+      division: showDivision ? division : undefined,
       image_url: file_url,
       caption: caption.trim() || undefined,
       organizer_user_id: organizerUserId || undefined,
@@ -62,6 +69,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId }) {
     toast.success("Photo uploaded successfully!");
     setName("");
     setRecipient("");
+    setDivision("");
     setCaption("");
     clearFile();
     setLoading(false);
@@ -87,6 +95,10 @@ export default function PhotoUploadForm({ eventId, organizerUserId }) {
             <Input value={recipient} onChange={(e) => setRecipient(e.target.value)} placeholder="Who is this for?" className="font-sans text-sm bg-background border-border/50" />
           </div>
         </div>
+
+        {showDivision && (
+          <DivisionSelect value={division} onChange={setDivision} />
+        )}
 
         <div className="space-y-2">
           <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">Caption (Optional)</Label>
@@ -124,7 +136,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId }) {
         open={showConfirm}
         onOpenChange={setShowConfirm}
         title="Confirm Upload"
-        description={`Upload this photo from "${name}" for "${recipient}"?`}
+        description={`Upload this photo from "${name}" for "${recipient}"${showDivision && division ? ` (${division})` : ""}?`}
         confirmLabel="Upload"
         onConfirm={handleConfirmedSubmit}
       />

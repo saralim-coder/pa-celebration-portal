@@ -45,6 +45,7 @@ export default function MessageCard({ message, onDelete, onVote }) {
             <span>{message.uploader_name}</span>
             <ArrowRight className="w-3 h-3" />
             <span className="text-primary font-medium">{message.recipient}</span>
+            {message.division && <span className="text-muted-foreground/70">· {message.division}</span>}
           </div>
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
