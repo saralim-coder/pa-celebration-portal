@@ -25,6 +25,11 @@
     "organizer_user_id": {
       "type": "string",
       "title": "Organizer User ID"
+    },
+    "votes": {
+      "type": "number",
+      "title": "Votes",
+      "default": 0
     }
   },
   "required": [
@@ -36,21 +41,7 @@
   "rls": {
     "create": {},
     "read": {},
-    "update": {
-      "$or": [
-        {
-          "created_by": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        },
-        {
-          "data.organizer_user_id": "{{user.id}}"
-        }
-      ]
-    },
+    "update": null,
     "delete": null
   }
 }
