@@ -47,20 +47,6 @@
         }
       ]
     },
-    "delete": {
-      "$or": [
-        {
-          "created_by": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        },
-        {
-          "data.organizer_user_id": "{{user.id}}"
-        }
-      ]
-    }
+    "delete": null
   }
 }
