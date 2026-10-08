@@ -49,12 +49,11 @@ export default function EventDashboard() {
     return { ...d, submitted, received };
   });
 
-  // Include "Leadership" rows only if there's data. Records without a division
-  // (created before the field existed) count toward "Leadership".
-  const unsureSubmitted = all.filter((x) => !x.uploader_division || x.uploader_division === "Leadership").length;
-  const unsureReceived = all.filter((x) => !x.division || x.division === "Leadership").length;
-  if (unsureSubmitted || unsureReceived) {
-    stats.push({ short: "Leadership", full: "Leadership", submitted: unsureSubmitted, received: unsureReceived });
+  // "Leadership" row — only records explicitly tagged, not blanks.
+  const leadershipSubmitted = all.filter((x) => x.uploader_division === "Leadership").length;
+  const leadershipReceived = all.filter((x) => x.division === "Leadership").length;
+  if (leadershipSubmitted || leadershipReceived) {
+    stats.push({ short: "Leadership", full: "Leadership", submitted: leadershipSubmitted, received: leadershipReceived });
   }
 
   const totalSubmitted = all.length;
