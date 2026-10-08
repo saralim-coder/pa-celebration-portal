@@ -13,6 +13,7 @@ import EventHome from './pages/EventHome';
 import EventUpload from './pages/EventUpload';
 import EventGallery from './pages/EventGallery';
 import EventSlideshow from './pages/EventSlideshow';
+import EventDashboard from './pages/EventDashboard';
 import Dashboard from './pages/Dashboard';
 
 const AuthenticatedApp = () => {
@@ -50,6 +51,7 @@ const AuthenticatedApp = () => {
         <Route index element={<EventHome />} />
         <Route path="upload" element={<EventUpload />} />
         <Route path="gallery" element={<EventGallery />} />
+        <Route path="dashboard" element={<EventDashboard />} />
       </Route>
       <Route path="/event/:eventId/slideshow" element={<EventSlideshow />} />
     </Routes>

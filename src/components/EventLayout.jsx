@@ -1,8 +1,9 @@
 import { Outlet, Link, useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { Camera, Image, Home, Monitor } from "lucide-react";
+import { Camera, Image, Home, Monitor, BarChart3 } from "lucide-react";
 import Footer from "./Footer";
+import { isDivisionEvent } from "@/utils/divisions";
 
 export default function EventLayout() {
   const { eventId } = useParams();
@@ -13,10 +14,12 @@ export default function EventLayout() {
     queryFn: () => base44.entities.Event.get(eventId),
   });
 
+  const showDashboard = isDivisionEvent(event?.title);
   const navItems = [
     { path: `/event/${eventId}`, label: "Home", icon: Home },
     { path: `/event/${eventId}/upload`, label: "Upload", icon: Camera },
     { path: `/event/${eventId}/gallery`, label: "Gallery", icon: Image },
+    ...(showDashboard ? [{ path: `/event/${eventId}/dashboard`, label: "Dashboard", icon: BarChart3 }] : []),
   ];
   const desktopNavItems = [...navItems, { path: `/event/${eventId}/slideshow`, label: "Slideshow", icon: Monitor }];
 
