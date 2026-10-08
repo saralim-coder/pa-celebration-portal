@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Download, User, ArrowRight, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeletePasswordDialog from "./DeletePasswordDialog";
+import VoteButton from "./VoteButton";
 
-export default function PhotoCard({ photo, onDelete }) {
+export default function PhotoCard({ photo, onDelete, onVote }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -65,6 +66,7 @@ export default function PhotoCard({ photo, onDelete }) {
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>
+            <VoteButton itemId={photo.id} votes={photo.votes || 0} onVote={onVote} />
           </div>
         </div>
       </div>

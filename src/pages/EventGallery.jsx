@@ -54,6 +54,18 @@ export default function EventGallery() {
     }
   };
 
+  const handleVotePhoto = async (photoId) => {
+    const photo = photos.find((p) => p.id === photoId);
+    await base44.entities.Photo.update(photoId, { votes: (photo.votes || 0) + 1 });
+    queryClient.invalidateQueries({ queryKey: ["photos", eventId] });
+  };
+
+  const handleVoteMessage = async (messageId) => {
+    const message = messages.find((m) => m.id === messageId);
+    await base44.entities.Message.update(messageId, { votes: (message.votes || 0) + 1 });
+    queryClient.invalidateQueries({ queryKey: ["messages", eventId] });
+  };
+
   const allRecipients = useMemo(() => {
     const set = new Set([...photos.map((p) => p.recipient), ...messages.map((m) => m.recipient)]);
     return [...set].sort();
@@ -161,7 +173,7 @@ export default function EventGallery() {
               <EmptyState type="photos" />
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {filteredPhotos.map((photo) => <PhotoCard key={photo.id} photo={photo} onDelete={handleDeletePhoto} />)}
+                {filteredPhotos.map((photo) => <PhotoCard key={photo.id} photo={photo} onDelete={handleDeletePhoto} onVote={handleVotePhoto} />)}
               </div>
             )}
           </TabsContent>
@@ -171,7 +183,7 @@ export default function EventGallery() {
               <EmptyState type="messages" />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredMessages.map((message) => <MessageCard key={message.id} message={message} onDelete={handleDeleteMessage} />)}
+                {filteredMessages.map((message) => <MessageCard key={message.id} message={message} onDelete={handleDeleteMessage} onVote={handleVoteMessage} />)}
               </div>
             )}
           </TabsContent>
