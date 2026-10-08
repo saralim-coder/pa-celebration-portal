@@ -47,7 +47,7 @@ export default function MessageCard({ message, onDelete, onVote }) {
             <ArrowRight className="w-3 h-3" />
             <span className="text-primary font-medium">{message.recipient}</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center flex-wrap gap-1">
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>

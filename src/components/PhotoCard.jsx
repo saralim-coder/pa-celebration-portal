@@ -64,7 +64,7 @@ export default function PhotoCard({ photo, onDelete, onVote }) {
           {photo.caption && (
             <p className="text-xs font-sans text-foreground/80 line-clamp-2">{photo.caption}</p>
           )}
-          <div className="flex items-center gap-1 pt-1">
+          <div className="flex items-center flex-wrap gap-1 pt-1">
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>
