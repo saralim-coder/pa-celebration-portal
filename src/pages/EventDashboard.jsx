@@ -49,9 +49,10 @@ export default function EventDashboard() {
     return { ...d, submitted, received };
   });
 
-  // Include "Unsure" rows only if there's data
-  const unsureSubmitted = all.filter((x) => x.uploader_division === "Unsure" || (!x.uploader_division && x.uploader_name)).length;
-  const unsureReceived = all.filter((x) => x.division === "Unsure").length;
+  // Include "Unsure" rows only if there's data. Records without a division
+  // (created before the field existed) count toward "Unsure".
+  const unsureSubmitted = all.filter((x) => !x.uploader_division || x.uploader_division === "Unsure").length;
+  const unsureReceived = all.filter((x) => !x.division || x.division === "Unsure").length;
   if (unsureSubmitted || unsureReceived) {
     stats.push({ short: "Unsure", full: "Not sure which division", submitted: unsureSubmitted, received: unsureReceived });
   }
