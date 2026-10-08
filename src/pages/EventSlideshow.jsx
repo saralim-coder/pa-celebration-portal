@@ -327,10 +327,19 @@ export default function EventSlideshow() {
   );
 }
 
+function getGlowStyle(votes) {
+  const v = votes || 0;
+  if (v === 0) return {};
+  const blur = Math.min(12 + v * 4, 80);
+  const spread = Math.min(v * 1.5, 24);
+  const opacity = Math.min(0.15 + v * 0.035, 0.7);
+  return { boxShadow: `0 0 ${blur}px ${spread}px rgba(212, 175, 55, ${opacity})` };
+}
+
 function PhotoSlide({ photo }) {
   return (
     <div className="flex flex-col items-center gap-5 w-full">
-      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 h-[42vh] md:h-[380px]">
+      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 h-[42vh] md:h-[380px] transition-all duration-700" style={getGlowStyle(photo.votes)}>
         <img src={photo.image_url} alt="" className="max-w-full max-h-full w-auto h-auto object-contain" />
       </div>
       <div className="text-center space-y-2">
@@ -347,6 +356,7 @@ function PhotoSlide({ photo }) {
             <span className="font-medium">{photo.votes}</span>
           </div>
         )}
+        <p className="font-sans text-xs text-muted-foreground/70 pt-1">More hearts make the glow stronger ✨</p>
       </div>
     </div>
   );
@@ -356,14 +366,16 @@ function MessageSlide({ message }) {
   const len = (message.content || "").length;
   const fontSize = len > 400 ? "text-lg" : len > 250 ? "text-xl" : len > 150 ? "text-2xl" : "text-3xl";
   return (
-    <div className="flex flex-col items-center justify-center text-center space-y-6 px-4">
-      <Quote className="w-10 h-10 text-primary/30" />
-      <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl`}>{message.content}</p>
-      <div className="flex items-center gap-2 text-base font-sans text-muted-foreground">
-        <User className="w-4 h-4" />
-        <span>{message.uploader_name}</span>
-        <ArrowRight className="w-4 h-4" />
-        <span className="text-primary font-medium">{message.recipient}</span>
+    <div className="flex flex-col items-center justify-center text-center space-y-4 px-4">
+      <div className="rounded-2xl px-6 md:px-10 py-8 bg-card/40 transition-all duration-700" style={getGlowStyle(message.votes)}>
+        <Quote className="w-10 h-10 text-primary/30 mb-3 mx-auto" />
+        <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl`}>{message.content}</p>
+        <div className="flex items-center justify-center gap-2 text-base font-sans text-muted-foreground mt-4">
+          <User className="w-4 h-4" />
+          <span>{message.uploader_name}</span>
+          <ArrowRight className="w-4 h-4" />
+          <span className="text-primary font-medium">{message.recipient}</span>
+        </div>
       </div>
       {message.votes > 0 && (
         <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
@@ -371,6 +383,7 @@ function MessageSlide({ message }) {
           <span className="font-medium">{message.votes}</span>
         </div>
       )}
+      <p className="font-sans text-xs text-muted-foreground/70">More hearts make the glow stronger ✨</p>
     </div>
   );
 }
