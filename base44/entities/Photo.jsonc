@@ -10,6 +10,10 @@
       "type": "string",
       "title": "Uploader Name"
     },
+    "uploader_division": {
+      "type": "string",
+      "title": "Uploader Division"
+    },
     "recipient": {
       "type": "string",
       "title": "Recipient"

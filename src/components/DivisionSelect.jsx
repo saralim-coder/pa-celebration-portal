@@ -8,11 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function DivisionSelect({ value, onChange }) {
+export default function DivisionSelect({ value, onChange, label = "Recipient Division", required = true }) {
   return (
     <div className="space-y-2">
       <Label className="font-sans text-xs font-medium text-muted-foreground uppercase tracking-wider">
-        Recipient Division *
+        {label} {required && "*"}
       </Label>
       <Select value={value || undefined} onValueChange={onChange}>
         <SelectTrigger className="font-sans text-sm bg-background border-border/50">
@@ -21,7 +21,7 @@ export default function DivisionSelect({ value, onChange }) {
         <SelectContent>
           {PA_DIVISIONS.map((d) => (
             <SelectItem key={d.short} value={d.short}>
-              {d.short} — {d.full}
+              {d.short === "Unsure" ? "Unsure" : `${d.short} — ${d.full}`}
             </SelectItem>
           ))}
         </SelectContent>

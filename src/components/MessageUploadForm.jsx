@@ -14,6 +14,7 @@ export default function MessageUploadForm({ eventId, organizerUserId, eventTitle
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
   const [division, setDivision] = useState("");
+  const [uploaderDivision, setUploaderDivision] = useState("");
   const [content, setContent] = useState("");
 
   const showDivision = isDivisionEvent(eventTitle);
@@ -24,6 +25,7 @@ export default function MessageUploadForm({ eventId, organizerUserId, eventTitle
     if (!name.trim()) { toast.error("Please enter your name"); return; }
     if (!recipient.trim()) { toast.error("Please enter the recipient's name"); return; }
     if (showDivision && !division) { toast.error("Please select the recipient's division"); return; }
+    if (showDivision && !uploaderDivision) { toast.error("Please select your division"); return; }
     if (!content.trim()) { toast.error("Please write a message"); return; }
     setShowConfirm(true);
   };
@@ -34,6 +36,7 @@ export default function MessageUploadForm({ eventId, organizerUserId, eventTitle
     await base44.entities.Message.create({
       event_id: eventId,
       uploader_name: name.trim(),
+      uploader_division: showDivision ? uploaderDivision : undefined,
       recipient: recipient.trim(),
       division: showDivision ? division : undefined,
       content: content.trim(),
@@ -43,6 +46,7 @@ export default function MessageUploadForm({ eventId, organizerUserId, eventTitle
     setName("");
     setRecipient("");
     setDivision("");
+    setUploaderDivision("");
     setContent("");
     setLoading(false);
   };
@@ -69,7 +73,10 @@ export default function MessageUploadForm({ eventId, organizerUserId, eventTitle
         </div>
 
         {showDivision && (
-          <DivisionSelect value={division} onChange={setDivision} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <DivisionSelect label="Your Division" value={uploaderDivision} onChange={setUploaderDivision} />
+            <DivisionSelect value={division} onChange={setDivision} />
+          </div>
         )}
 
         <div className="space-y-2">
@@ -93,7 +100,7 @@ export default function MessageUploadForm({ eventId, organizerUserId, eventTitle
         open={showConfirm}
         onOpenChange={setShowConfirm}
         title="Confirm Submission"
-        description={`Send this message from "${name}" to "${recipient}"${showDivision && division ? ` (${division})` : ""}?`}
+        description={`Send this message from "${name}"${showDivision && uploaderDivision ? ` (${uploaderDivision})` : ""} to "${recipient}"${showDivision && division ? ` (${division})` : ""}?`}
         confirmLabel="Send"
         onConfirm={handleConfirmedSubmit}
       />

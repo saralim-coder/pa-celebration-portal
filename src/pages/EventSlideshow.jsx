@@ -356,6 +356,7 @@ function PhotoSlide({ photo }) {
         <div className="flex items-center justify-center gap-2 text-base font-sans text-muted-foreground">
           <User className="w-4 h-4" />
           <span>{photo.uploader_name}</span>
+          {photo.uploader_division && <span className="text-muted-foreground/70">({photo.uploader_division})</span>}
           <ArrowRight className="w-4 h-4" />
           <span className="text-primary font-medium">{photo.recipient}</span>
           {photo.division && <span className="text-muted-foreground/70">· {photo.division}</span>}
@@ -381,6 +382,7 @@ function MessageSlide({ message }) {
         <div className="flex items-center justify-center gap-2 text-base font-sans text-muted-foreground mt-4">
           <User className="w-4 h-4" />
           <span>{message.uploader_name}</span>
+          {message.uploader_division && <span className="text-muted-foreground/70">({message.uploader_division})</span>}
           <ArrowRight className="w-4 h-4" />
           <span className="text-primary font-medium">{message.recipient}</span>
           {message.division && <span className="text-muted-foreground/70">· {message.division}</span>}

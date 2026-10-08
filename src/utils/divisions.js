@@ -1,7 +1,7 @@
 // PA division short forms — only the short form is stored.
 // Full names are shown in the dropdown for clarity.
+// Sorted alphabetically by short form.
 export const PA_DIVISIONS = [
-  { short: "HR", full: "Human Resources" },
   { short: "2LD", full: "Lifeskills & Lifestyle" },
   { short: "A&P", full: "Administration & Procurement" },
   { short: "AAFL", full: "Active Ageing & Family Life" },
@@ -17,6 +17,7 @@ export const PA_DIVISIONS = [
   { short: "EP", full: "Emergency Preparedness" },
   { short: "GPP", full: "Grassroots Policy & Programmes" },
   { short: "GS", full: "Grassroots Services" },
+  { short: "HR", full: "Human Resources" },
   { short: "IA", full: "Internal Audit" },
   { short: "ICH", full: "Integrated Community Hub" },
   { short: "ICT", full: "Infocomm Technology" },
@@ -40,6 +41,7 @@ export const PA_DIVISIONS = [
   { short: "TO", full: "Transformation Office" },
   { short: "VM", full: "Volunteer Management" },
   { short: "Y&S", full: "Youth & Sports" },
+  { short: "Unsure", full: "Not sure which division" },
 ];
 
 // Events that require the division selector.

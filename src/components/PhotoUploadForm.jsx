@@ -14,6 +14,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId, eventTitle }
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
   const [division, setDivision] = useState("");
+  const [uploaderDivision, setUploaderDivision] = useState("");
   const [caption, setCaption] = useState("");
 
   const showDivision = isDivisionEvent(eventTitle);
@@ -49,6 +50,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId, eventTitle }
     if (!name.trim()) { toast.error("Please enter your name"); return; }
     if (!recipient.trim()) { toast.error("Please enter the recipient's name"); return; }
     if (showDivision && !division) { toast.error("Please select the recipient's division"); return; }
+    if (showDivision && !uploaderDivision) { toast.error("Please select your division"); return; }
     if (!file) { toast.error("Please select a photo"); return; }
     setShowConfirm(true);
   };
@@ -60,6 +62,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId, eventTitle }
     await base44.entities.Photo.create({
       event_id: eventId,
       uploader_name: name.trim(),
+      uploader_division: showDivision ? uploaderDivision : undefined,
       recipient: recipient.trim(),
       division: showDivision ? division : undefined,
       image_url: file_url,
@@ -70,6 +73,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId, eventTitle }
     setName("");
     setRecipient("");
     setDivision("");
+    setUploaderDivision("");
     setCaption("");
     clearFile();
     setLoading(false);
@@ -97,7 +101,10 @@ export default function PhotoUploadForm({ eventId, organizerUserId, eventTitle }
         </div>
 
         {showDivision && (
-          <DivisionSelect value={division} onChange={setDivision} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <DivisionSelect label="Your Division" value={uploaderDivision} onChange={setUploaderDivision} />
+            <DivisionSelect value={division} onChange={setDivision} />
+          </div>
         )}
 
         <div className="space-y-2">
@@ -136,7 +143,7 @@ export default function PhotoUploadForm({ eventId, organizerUserId, eventTitle }
         open={showConfirm}
         onOpenChange={setShowConfirm}
         title="Confirm Upload"
-        description={`Upload this photo from "${name}" for "${recipient}"${showDivision && division ? ` (${division})` : ""}?`}
+        description={`Upload this photo from "${name}"${showDivision && uploaderDivision ? ` (${uploaderDivision})` : ""} for "${recipient}"${showDivision && division ? ` (${division})` : ""}?`}
         confirmLabel="Upload"
         onConfirm={handleConfirmedSubmit}
       />
