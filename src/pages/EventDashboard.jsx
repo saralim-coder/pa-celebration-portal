@@ -43,18 +43,11 @@ export default function EventDashboard() {
 
   const all = [...photos, ...messages];
 
-  const stats = PA_DIVISIONS.filter((d) => d.short !== "Leadership").map((d) => {
+  const stats = PA_DIVISIONS.map((d) => {
     const submitted = all.filter((x) => x.uploader_division === d.short).length;
     const received = all.filter((x) => x.division === d.short).length;
     return { ...d, submitted, received };
   });
-
-  // "Leadership" row — only records explicitly tagged, not blanks.
-  const leadershipSubmitted = all.filter((x) => x.uploader_division === "Leadership").length;
-  const leadershipReceived = all.filter((x) => x.division === "Leadership").length;
-  if (leadershipSubmitted || leadershipReceived) {
-    stats.push({ short: "Leadership", full: "Leadership", submitted: leadershipSubmitted, received: leadershipReceived });
-  }
 
   const totalSubmitted = all.length;
   const totalReceived = all.filter((x) => x.division).length;
