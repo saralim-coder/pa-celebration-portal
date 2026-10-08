@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import Footer from "@/components/Footer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const SCREEN_SIZES = [
   { id: "16:9", label: "16:9 Widescreen", description: "Standard HD / projector", width: 1920, height: 1080 },
@@ -18,6 +19,7 @@ const SCREEN_SIZES = [
 
 export default function EventSlideshow() {
   const { eventId } = useParams();
+  const isMobile = useIsMobile();
   const [event, setEvent] = useState(null);
   const [stage, setStage] = useState("password"); // "password" | "size" | "slideshow"
   const [passwordInput, setPasswordInput] = useState("");
@@ -128,6 +130,21 @@ export default function EventSlideshow() {
   }, [stage, goNext, goPrev]);
 
   const isLoading = loadingPhotos || loadingMessages || loadingEvent;
+
+  if (isMobile) {
+    return (
+      <div className="fixed inset-0 bg-background flex flex-col items-center justify-center gap-4 p-6 text-center">
+        <Monitor className="w-12 h-12 text-primary/40" />
+        <h2 className="font-serif text-2xl font-semibold text-foreground">Desktop Only</h2>
+        <p className="font-sans text-sm text-muted-foreground max-w-sm leading-relaxed">
+          The slideshow is designed for larger screens. Please open it on a desktop, laptop, or tablet.
+        </p>
+        <Button asChild variant="outline" className="font-sans text-sm mt-2">
+          <Link to={`/event/${eventId}/gallery`}>Back to Gallery</Link>
+        </Button>
+      </div>
+    );
+  }
 
   // ── Password screen ──
   if (stage === "password") {

@@ -34,7 +34,7 @@ export default function EventHome() {
     { icon: Camera, title: "Share Photos", description: "Upload your favourite photos", link: `/event/${eventId}/upload` },
     { icon: MessageSquare, title: "Send Well Wishes", description: "Write heartfelt congratulations", link: `/event/${eventId}/upload` },
     { icon: Image, title: "Browse Gallery", description: "View all photos and messages", link: `/event/${eventId}/gallery` },
-    { icon: Monitor, title: "Slideshow", description: "Watch the elegant presentation", link: `/event/${eventId}/slideshow` },
+    { icon: Monitor, title: "Slideshow", description: "Watch the elegant presentation", link: `/event/${eventId}/slideshow`, desktopOnly: true },
   ];
 
   return (
@@ -76,11 +76,11 @@ export default function EventHome() {
       <GoldDivider className="my-8 md:my-12" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {features.map(({ icon: Icon, title, description, link }) => (
+        {features.map(({ icon: Icon, title, description, link, desktopOnly }) => (
           <Link
             key={title}
             to={link}
-            className="group bg-card rounded-xl border border-border/50 p-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+            className={`group bg-card rounded-xl border border-border/50 p-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 ${desktopOnly ? "hidden md:block" : ""}`}
           >
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
               <Icon className="w-5 h-5 text-primary" />

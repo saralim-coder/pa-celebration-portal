@@ -17,8 +17,8 @@ export default function EventLayout() {
     { path: `/event/${eventId}`, label: "Home", icon: Home },
     { path: `/event/${eventId}/upload`, label: "Upload", icon: Camera },
     { path: `/event/${eventId}/gallery`, label: "Gallery", icon: Image },
-    { path: `/event/${eventId}/slideshow`, label: "Slideshow", icon: Monitor },
   ];
+  const desktopNavItems = [...navItems, { path: `/event/${eventId}/slideshow`, label: "Slideshow", icon: Monitor }];
 
   return (
     <div className="min-h-screen bg-background">
@@ -35,7 +35,7 @@ export default function EventLayout() {
             </h1>
           </Link>
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.map(({ path, label, icon: Icon }) => (
+            {desktopNavItems.map(({ path, label, icon: Icon }) => (
               <Link
                 key={path}
                 to={path}
