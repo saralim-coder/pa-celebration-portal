@@ -287,6 +287,7 @@ export default function EventSlideshow() {
                 <QRCodeSVG value={window.location.origin + `/event/${eventId}/upload`} size={140} bgColor="transparent" fgColor="hsl(var(--primary))" level="M" />
               </div>
               <p className="font-sans text-xs text-muted-foreground text-center max-w-[120px] leading-tight">Scan to share your well wishes</p>
+              <p className="font-sans text-[10px] text-muted-foreground/70 text-center max-w-[140px] leading-tight">Built by People's Association (PA) Human Resources Division</p>
               <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
             </div>
             <div className="flex-1 flex items-center justify-center px-6">
