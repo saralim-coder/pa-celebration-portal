@@ -94,12 +94,6 @@ export default function EventHome() {
       <GoldDivider className="my-8 md:my-12" />
 
       <div className="text-center space-y-3 pb-8">
-        <p className="font-sans text-xs text-muted-foreground/70">More hearts make the glow stronger ✨</p>
-      </div>
-
-      <GoldDivider className="my-8 md:my-12" />
-
-      <div className="text-center space-y-3 pb-8">
         <h2 className="font-serif text-2xl font-semibold text-foreground">How It Works</h2>
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 pt-4">
           {[
