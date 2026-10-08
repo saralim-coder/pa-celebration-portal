@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Download, User, ArrowRight, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ConfirmDialog from "./ConfirmDialog";
+import DeletePasswordDialog from "./DeletePasswordDialog";
 
-export default function PhotoCard({ photo, canDelete = false, onDelete }) {
+export default function PhotoCard({ photo, onDelete }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -40,19 +40,17 @@ export default function PhotoCard({ photo, canDelete = false, onDelete }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>
-        {canDelete && (
-          <div className="absolute top-2 right-2">
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-8 w-8 bg-background/80 backdrop-blur-sm shadow-sm hover:bg-destructive hover:text-destructive-foreground"
-              onClick={() => setConfirmOpen(true)}
-              disabled={deleting}
-            >
-              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-            </Button>
-          </div>
-        )}
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-8 w-8 bg-background/80 backdrop-blur-sm shadow-sm hover:bg-destructive hover:text-destructive-foreground"
+            onClick={() => setConfirmOpen(true)}
+            disabled={deleting}
+          >
+            {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+          </Button>
+        </div>
         <div className="p-3 space-y-2">
           <div className="flex items-center gap-2 text-xs font-sans text-muted-foreground">
             <User className="w-3 h-3" />
@@ -71,14 +69,12 @@ export default function PhotoCard({ photo, canDelete = false, onDelete }) {
         </div>
       </div>
 
-      <ConfirmDialog
+      <DeletePasswordDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title="Delete this photo?"
         description="This photo will be permanently removed from the gallery. This action cannot be undone."
         onConfirm={handleDelete}
-        confirmLabel="Delete"
-        variant="destructive"
       />
     </>
   );

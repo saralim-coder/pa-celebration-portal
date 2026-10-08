@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Download, User, ArrowRight, Quote, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ConfirmDialog from "./ConfirmDialog";
+import DeletePasswordDialog from "./DeletePasswordDialog";
 
-export default function MessageCard({ message, canDelete = false, onDelete }) {
+export default function MessageCard({ message, onDelete }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -48,30 +48,26 @@ export default function MessageCard({ message, canDelete = false, onDelete }) {
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={handleDownload}>
               <Download className="w-3 h-3 mr-1" /> Download
             </Button>
-            {canDelete && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 text-xs text-muted-foreground hover:text-destructive"
-                onClick={() => setConfirmOpen(true)}
-                disabled={deleting}
-              >
-                {deleting ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Trash2 className="w-3 h-3 mr-1" />}
-                Delete
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs text-muted-foreground hover:text-destructive"
+              onClick={() => setConfirmOpen(true)}
+              disabled={deleting}
+            >
+              {deleting ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Trash2 className="w-3 h-3 mr-1" />}
+              Delete
+            </Button>
           </div>
         </div>
       </div>
 
-      <ConfirmDialog
+      <DeletePasswordDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title="Delete this message?"
         description="This message will be permanently removed from the gallery. This action cannot be undone."
         onConfirm={handleDelete}
-        confirmLabel="Delete"
-        variant="destructive"
       />
     </>
   );

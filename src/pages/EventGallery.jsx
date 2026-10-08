@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, MessageSquare, Loader2, Download } from "lucide-react";
@@ -33,9 +32,7 @@ export default function EventGallery() {
     queryFn: () => base44.entities.Event.get(eventId),
   });
 
-  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const canDelete = !!(user && event && event.created_by_id === user.id);
 
   const handleDeletePhoto = async (photoId) => {
     try {
@@ -164,7 +161,7 @@ export default function EventGallery() {
               <EmptyState type="photos" />
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {filteredPhotos.map((photo) => <PhotoCard key={photo.id} photo={photo} canDelete={canDelete} onDelete={handleDeletePhoto} />)}
+                {filteredPhotos.map((photo) => <PhotoCard key={photo.id} photo={photo} onDelete={handleDeletePhoto} />)}
               </div>
             )}
           </TabsContent>
@@ -174,7 +171,7 @@ export default function EventGallery() {
               <EmptyState type="messages" />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredMessages.map((message) => <MessageCard key={message.id} message={message} canDelete={canDelete} onDelete={handleDeleteMessage} />)}
+                {filteredMessages.map((message) => <MessageCard key={message.id} message={message} onDelete={handleDeleteMessage} />)}
               </div>
             )}
           </TabsContent>
