@@ -290,7 +290,7 @@ export default function EventSlideshow() {
       </div>
 
       {/* Slide content */}
-      <div className="flex-1 flex items-stretch px-4 md:px-10 py-16 md:py-20 gap-0 overflow-hidden">
+      <div className="flex-1 flex items-stretch px-4 md:px-10 py-12 md:py-16 gap-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -298,9 +298,9 @@ export default function EventSlideshow() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="flex w-full items-center gap-0"
+            className="flex w-full items-stretch h-full gap-0"
           >
-            <div className="flex-1 flex items-center justify-center px-4 md:px-6">
+            <div className="flex-1 flex items-center justify-center px-4 md:px-6 h-full">
               {leftSlide && (leftSlide.type === "photo" ? <PhotoSlide photo={leftSlide.data} /> : <MessageSlide message={leftSlide.data} />)}
             </div>
             <div className="hidden md:flex flex-col items-center justify-center gap-4 px-6 shrink-0">
@@ -312,7 +312,7 @@ export default function EventSlideshow() {
               <p className="font-sans text-xs xl:text-sm text-muted-foreground/70 text-center max-w-[160px] leading-tight">Built by People's Association (PA) Human Resources Division</p>
               <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
             </div>
-            <div className="hidden md:flex flex-1 items-center justify-center px-6">
+            <div className="hidden md:flex flex-1 items-center justify-center px-6 h-full">
               {rightSlide ? (
                 rightSlide.type === "photo" ? <PhotoSlide photo={rightSlide.data} /> : <MessageSlide message={rightSlide.data} />
               ) : (
@@ -350,19 +350,17 @@ export default function EventSlideshow() {
 }
 
 function PhotoSlide({ photo }) {
+  const capMaxVh = Math.min(2.8, startFontVh(photo.caption?.length || 0));
   return (
-    <div className="flex flex-col items-center gap-5 w-full">
-      <div className={`w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 ${photo.caption ? "h-[48vh]" : "h-[58vh]"} transition-all duration-700`} style={getGlowStyle(photo.votes)}>
+    <div className="flex flex-col items-center w-full h-full gap-2 md:gap-4">
+      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 flex-1 min-h-0 transition-all duration-700" style={getGlowStyle(photo.votes)}>
         <img src={photo.image_url} alt="" className="max-w-full max-h-full w-auto h-auto object-contain" />
       </div>
-      <div className="text-center space-y-2">
+      <div className="shrink-0 text-center space-y-1.5 w-full max-w-3xl">
         {photo.caption && (
-          <FitText
-            text={`"${photo.caption}"`}
-            maxVh={11}
-            maxFontVh={Math.min(3, startFontVh(photo.caption.length))}
-            className="font-serif text-foreground italic leading-snug"
-          />
+          <div className="max-h-[11vh] overflow-hidden">
+            <FitText text={`"${photo.caption}"`} maxFontVh={capMaxVh} className="font-serif text-foreground italic leading-snug" />
+          </div>
         )}
         <div className="flex items-center justify-center gap-2 text-lg xl:text-xl 2xl:text-2xl font-sans text-muted-foreground">
           <User className="w-4 h-4" />
@@ -374,7 +372,7 @@ function PhotoSlide({ photo }) {
           <Heart className="w-5 h-5 xl:w-6 xl:h-6 fill-primary" />
           <span className="font-medium">{photo.votes || 0}</span>
         </div>
-        <p className="font-sans text-xs xl:text-sm 2xl:text-base text-muted-foreground/70 pt-1">More hearts make the glow stronger ✨</p>
+        <p className="font-sans text-xs xl:text-sm 2xl:text-base text-muted-foreground/70 pt-0.5">More hearts make the glow stronger ✨</p>
       </div>
     </div>
   );
@@ -382,28 +380,26 @@ function PhotoSlide({ photo }) {
 
 function MessageSlide({ message }) {
   const len = (message.content || "").length;
+  const maxFontVh = len < 60 ? 6 : len < 150 ? 5 : len < 250 ? 4 : len < 400 ? 3.2 : 2.6;
   return (
-    <div className="flex flex-col items-center justify-center text-center space-y-4 px-4">
-      <div className="rounded-2xl px-6 md:px-10 py-8 bg-card/40 transition-all duration-700" style={getGlowStyle(message.votes)}>
-        <Quote className="w-10 h-10 text-primary/30 mb-3 mx-auto" />
-        <FitText
-          text={message.content}
-          maxVh={45}
-          maxFontVh={startFontVh(len)}
-          className="font-serif text-foreground leading-relaxed max-w-3xl xl:max-w-5xl"
-        />
-        <div className="flex items-center justify-center gap-2 text-lg xl:text-xl 2xl:text-2xl font-sans text-muted-foreground mt-4">
+    <div className="flex flex-col items-center justify-center text-center px-4 h-full w-full max-w-3xl xl:max-w-5xl">
+      <div className="rounded-2xl px-6 md:px-10 py-6 md:py-8 bg-card/40 transition-all duration-700 flex flex-col items-center w-full flex-1 min-h-0" style={getGlowStyle(message.votes)}>
+        <Quote className="w-10 h-10 text-primary/30 mb-2 mx-auto shrink-0" />
+        <div className="flex-1 min-h-0 w-full flex items-center justify-center">
+          <FitText text={message.content} maxFontVh={maxFontVh} className="font-serif text-foreground leading-relaxed" />
+        </div>
+        <div className="flex items-center justify-center gap-2 text-lg xl:text-xl 2xl:text-2xl font-sans text-muted-foreground mt-3 shrink-0">
           <User className="w-4 h-4" />
           <span>{message.uploader_name}</span>
           <ArrowRight className="w-4 h-4" />
           <span className="text-primary font-medium">{message.recipient}</span>
         </div>
       </div>
-      <div className="flex items-center justify-center gap-1.5 text-lg xl:text-xl 2xl:text-2xl font-sans text-primary">
+      <div className="flex items-center justify-center gap-1.5 text-lg xl:text-xl 2xl:text-2xl font-sans text-primary shrink-0 mt-3">
         <Heart className="w-5 h-5 xl:w-6 xl:h-6 fill-primary" />
         <span className="font-medium">{message.votes || 0}</span>
       </div>
-      <p className="font-sans text-xs xl:text-sm 2xl:text-base text-muted-foreground/70">More hearts make the glow stronger ✨</p>
+      <p className="font-sans text-xs xl:text-sm 2xl:text-base text-muted-foreground/70 shrink-0 mt-1">More hearts make the glow stronger ✨</p>
     </div>
   );
 }
