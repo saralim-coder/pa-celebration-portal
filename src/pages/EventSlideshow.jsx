@@ -302,7 +302,7 @@ export default function EventSlideshow() {
             <div className="hidden md:flex flex-col items-center justify-center gap-4 px-6 shrink-0">
               <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
               <div className="bg-card border border-border/50 rounded-2xl p-4 shadow-lg">
-                <QRCodeSVG value={window.location.origin + `/event/${eventId}/upload`} size={140} bgColor="transparent" fgColor="hsl(var(--primary))" level="M" />
+                <QRCodeSVG value={window.location.origin + `/event/${eventId}/upload`} size={160} bgColor="transparent" fgColor="hsl(var(--primary))" level="M" />
               </div>
               <p className="font-sans text-xs text-muted-foreground text-center max-w-[120px] leading-tight">Scan to share your well wishes</p>
               <p className="font-sans text-[10px] text-muted-foreground/70 text-center max-w-[140px] leading-tight">Built by People's Association (PA) Human Resources Division</p>
@@ -348,7 +348,7 @@ export default function EventSlideshow() {
 function PhotoSlide({ photo }) {
   return (
     <div className="flex flex-col items-center gap-5 w-full">
-      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 h-[42vh] md:h-[380px] transition-all duration-700" style={getGlowStyle(photo.votes)}>
+      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 h-[50vh] md:h-[60vh] lg:h-[620px] transition-all duration-700" style={getGlowStyle(photo.votes)}>
         <img src={photo.image_url} alt="" className="max-w-full max-h-full w-auto h-auto object-contain" />
       </div>
       <div className="text-center space-y-2">
@@ -371,12 +371,12 @@ function PhotoSlide({ photo }) {
 
 function MessageSlide({ message }) {
   const len = (message.content || "").length;
-  const fontSize = len > 400 ? "text-lg" : len > 250 ? "text-xl" : len > 150 ? "text-2xl" : "text-3xl";
+  const fontSize = len > 400 ? "text-xl lg:text-2xl" : len > 250 ? "text-2xl lg:text-3xl" : len > 150 ? "text-3xl lg:text-4xl" : "text-3xl lg:text-5xl";
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-4 px-4">
       <div className="rounded-2xl px-6 md:px-10 py-8 bg-card/40 transition-all duration-700" style={getGlowStyle(message.votes)}>
         <Quote className="w-10 h-10 text-primary/30 mb-3 mx-auto" />
-        <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl`}>{message.content}</p>
+        <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl lg:max-w-4xl`}>{message.content}</p>
         <div className="flex items-center justify-center gap-2 text-base font-sans text-muted-foreground mt-4">
           <User className="w-4 h-4" />
           <span>{message.uploader_name}</span>
