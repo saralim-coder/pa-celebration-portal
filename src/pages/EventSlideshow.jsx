@@ -302,10 +302,10 @@ export default function EventSlideshow() {
             <div className="hidden md:flex flex-col items-center justify-center gap-4 px-6 shrink-0">
               <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
               <div className="bg-card border border-border/50 rounded-2xl p-4 shadow-lg">
-                <QRCodeSVG value={window.location.origin + `/event/${eventId}/upload`} size={160} bgColor="transparent" fgColor="hsl(var(--primary))" level="M" />
+                <QRCodeSVG value={window.location.origin + `/event/${eventId}/upload`} size={180} bgColor="transparent" fgColor="hsl(var(--primary))" level="M" />
               </div>
-              <p className="font-sans text-xs text-muted-foreground text-center max-w-[120px] leading-tight">Scan to share your well wishes</p>
-              <p className="font-sans text-[10px] text-muted-foreground/70 text-center max-w-[140px] leading-tight">Built by People's Association (PA) Human Resources Division</p>
+              <p className="font-sans text-sm xl:text-base text-muted-foreground text-center max-w-[140px] leading-tight">Scan to share your well wishes</p>
+              <p className="font-sans text-xs xl:text-sm text-muted-foreground/70 text-center max-w-[160px] leading-tight">Built by People's Association (PA) Human Resources Division</p>
               <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
             </div>
             <div className="hidden md:flex flex-1 items-center justify-center px-6">
@@ -352,18 +352,18 @@ function PhotoSlide({ photo }) {
         <img src={photo.image_url} alt="" className="max-w-full max-h-full w-auto h-auto object-contain" />
       </div>
       <div className="text-center space-y-2">
-        {photo.caption && <p className="font-serif text-2xl lg:text-3xl text-foreground italic">"{photo.caption}"</p>}
-        <div className="flex items-center justify-center gap-2 text-lg font-sans text-muted-foreground">
+        {photo.caption && <p className="font-serif text-2xl xl:text-3xl 2xl:text-4xl text-foreground italic">"{photo.caption}"</p>}
+        <div className="flex items-center justify-center gap-2 text-lg xl:text-xl 2xl:text-2xl font-sans text-muted-foreground">
           <User className="w-4 h-4" />
           <span>{photo.uploader_name}</span>
           <ArrowRight className="w-4 h-4" />
           <span className="text-primary font-medium">{photo.recipient}</span>
         </div>
-        <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
-          <Heart className="w-4 h-4 fill-primary" />
+        <div className="flex items-center justify-center gap-1.5 text-lg xl:text-xl 2xl:text-2xl font-sans text-primary">
+          <Heart className="w-5 h-5 xl:w-6 xl:h-6 fill-primary" />
           <span className="font-medium">{photo.votes || 0}</span>
         </div>
-        <p className="font-sans text-xs text-muted-foreground/70 pt-1">More hearts make the glow stronger ✨</p>
+        <p className="font-sans text-xs xl:text-sm 2xl:text-base text-muted-foreground/70 pt-1">More hearts make the glow stronger ✨</p>
       </div>
     </div>
   );
@@ -371,24 +371,24 @@ function PhotoSlide({ photo }) {
 
 function MessageSlide({ message }) {
   const len = (message.content || "").length;
-  const fontSize = len > 400 ? "text-2xl lg:text-3xl" : len > 250 ? "text-3xl lg:text-4xl" : len > 150 ? "text-4xl lg:text-5xl" : "text-4xl lg:text-6xl";
+  const fontSize = len > 400 ? "text-2xl xl:text-3xl 2xl:text-4xl" : len > 250 ? "text-3xl xl:text-4xl 2xl:text-5xl" : len > 150 ? "text-4xl xl:text-5xl 2xl:text-6xl" : "text-4xl xl:text-6xl 2xl:text-7xl";
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-4 px-4">
       <div className="rounded-2xl px-6 md:px-10 py-8 bg-card/40 transition-all duration-700" style={getGlowStyle(message.votes)}>
         <Quote className="w-10 h-10 text-primary/30 mb-3 mx-auto" />
-        <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl lg:max-w-4xl`}>{message.content}</p>
-        <div className="flex items-center justify-center gap-2 text-lg font-sans text-muted-foreground mt-4">
+        <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl xl:max-w-5xl`}>{message.content}</p>
+        <div className="flex items-center justify-center gap-2 text-lg xl:text-xl 2xl:text-2xl font-sans text-muted-foreground mt-4">
           <User className="w-4 h-4" />
           <span>{message.uploader_name}</span>
           <ArrowRight className="w-4 h-4" />
           <span className="text-primary font-medium">{message.recipient}</span>
         </div>
       </div>
-      <div className="flex items-center justify-center gap-1.5 text-sm font-sans text-primary">
-        <Heart className="w-4 h-4 fill-primary" />
+      <div className="flex items-center justify-center gap-1.5 text-lg xl:text-xl 2xl:text-2xl font-sans text-primary">
+        <Heart className="w-5 h-5 xl:w-6 xl:h-6 fill-primary" />
         <span className="font-medium">{message.votes || 0}</span>
       </div>
-      <p className="font-sans text-xs text-muted-foreground/70">More hearts make the glow stronger ✨</p>
+      <p className="font-sans text-xs xl:text-sm 2xl:text-base text-muted-foreground/70">More hearts make the glow stronger ✨</p>
     </div>
   );
 }
