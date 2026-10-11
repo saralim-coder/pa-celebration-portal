@@ -352,8 +352,8 @@ function PhotoSlide({ photo }) {
         <img src={photo.image_url} alt="" className="max-w-full max-h-full w-auto h-auto object-contain" />
       </div>
       <div className="text-center space-y-2">
-        {photo.caption && <p className="font-serif text-xl text-foreground italic">"{photo.caption}"</p>}
-        <div className="flex items-center justify-center gap-2 text-base font-sans text-muted-foreground">
+        {photo.caption && <p className="font-serif text-2xl lg:text-3xl text-foreground italic">"{photo.caption}"</p>}
+        <div className="flex items-center justify-center gap-2 text-lg font-sans text-muted-foreground">
           <User className="w-4 h-4" />
           <span>{photo.uploader_name}</span>
           <ArrowRight className="w-4 h-4" />
@@ -371,13 +371,13 @@ function PhotoSlide({ photo }) {
 
 function MessageSlide({ message }) {
   const len = (message.content || "").length;
-  const fontSize = len > 400 ? "text-xl lg:text-2xl" : len > 250 ? "text-2xl lg:text-3xl" : len > 150 ? "text-3xl lg:text-4xl" : "text-3xl lg:text-5xl";
+  const fontSize = len > 400 ? "text-2xl lg:text-3xl" : len > 250 ? "text-3xl lg:text-4xl" : len > 150 ? "text-4xl lg:text-5xl" : "text-4xl lg:text-6xl";
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-4 px-4">
       <div className="rounded-2xl px-6 md:px-10 py-8 bg-card/40 transition-all duration-700" style={getGlowStyle(message.votes)}>
         <Quote className="w-10 h-10 text-primary/30 mb-3 mx-auto" />
         <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl lg:max-w-4xl`}>{message.content}</p>
-        <div className="flex items-center justify-center gap-2 text-base font-sans text-muted-foreground mt-4">
+        <div className="flex items-center justify-center gap-2 text-lg font-sans text-muted-foreground mt-4">
           <User className="w-4 h-4" />
           <span>{message.uploader_name}</span>
           <ArrowRight className="w-4 h-4" />
