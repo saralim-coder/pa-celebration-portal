@@ -10,6 +10,10 @@ import { QRCodeSVG } from "qrcode.react";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getGlowStyle } from "@/utils/glow";
+import FitText from "@/components/slideshow/FitText";
+
+// Starting font size (in % of screen height) based on text length; FitText shrinks further if needed
+const startFontVh = (len) => (len < 60 ? 5.5 : len < 150 ? 4.5 : len < 250 ? 3.6 : len < 400 ? 3 : 2.5);
 
 const SCREEN_SIZES = [
   { id: "16:9", label: "16:9 Widescreen", description: "Standard HD / projector", width: 1920, height: 1080 },
@@ -348,11 +352,18 @@ export default function EventSlideshow() {
 function PhotoSlide({ photo }) {
   return (
     <div className="flex flex-col items-center gap-5 w-full">
-      <div className="w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 h-[50vh] md:h-[60vh] lg:h-[620px] transition-all duration-700" style={getGlowStyle(photo.votes)}>
+      <div className={`w-full rounded-xl overflow-hidden shadow-2xl shadow-primary/10 border border-border/30 flex items-center justify-center bg-black/5 ${photo.caption ? "h-[48vh]" : "h-[58vh]"} transition-all duration-700`} style={getGlowStyle(photo.votes)}>
         <img src={photo.image_url} alt="" className="max-w-full max-h-full w-auto h-auto object-contain" />
       </div>
       <div className="text-center space-y-2">
-        {photo.caption && <p className="font-serif text-2xl xl:text-3xl 2xl:text-4xl text-foreground italic">"{photo.caption}"</p>}
+        {photo.caption && (
+          <FitText
+            text={`"${photo.caption}"`}
+            maxVh={11}
+            maxFontVh={Math.min(3, startFontVh(photo.caption.length))}
+            className="font-serif text-foreground italic leading-snug"
+          />
+        )}
         <div className="flex items-center justify-center gap-2 text-lg xl:text-xl 2xl:text-2xl font-sans text-muted-foreground">
           <User className="w-4 h-4" />
           <span>{photo.uploader_name}</span>
@@ -371,12 +382,16 @@ function PhotoSlide({ photo }) {
 
 function MessageSlide({ message }) {
   const len = (message.content || "").length;
-  const fontSize = len > 400 ? "text-2xl xl:text-3xl 2xl:text-4xl" : len > 250 ? "text-3xl xl:text-4xl 2xl:text-5xl" : len > 150 ? "text-4xl xl:text-5xl 2xl:text-6xl" : "text-4xl xl:text-6xl 2xl:text-7xl";
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-4 px-4">
       <div className="rounded-2xl px-6 md:px-10 py-8 bg-card/40 transition-all duration-700" style={getGlowStyle(message.votes)}>
         <Quote className="w-10 h-10 text-primary/30 mb-3 mx-auto" />
-        <p className={`font-serif ${fontSize} text-foreground leading-relaxed max-w-3xl xl:max-w-5xl`}>{message.content}</p>
+        <FitText
+          text={message.content}
+          maxVh={45}
+          maxFontVh={startFontVh(len)}
+          className="font-serif text-foreground leading-relaxed max-w-3xl xl:max-w-5xl"
+        />
         <div className="flex items-center justify-center gap-2 text-lg xl:text-xl 2xl:text-2xl font-sans text-muted-foreground mt-4">
           <User className="w-4 h-4" />
           <span>{message.uploader_name}</span>
